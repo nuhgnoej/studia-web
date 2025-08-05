@@ -24,11 +24,9 @@ export default function HomePage() {
   if (loading) return <LoadingIndicator />;
 
   return (
-    <main className="p-8">
+    <main className="p-8 max-w-5xl mx-auto">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">📊 Studia 홈페이지</h1>
-        <h2>Welcome, {user?.email}</h2>
-        <h2>Welcome, {user?.displayName}</h2>
         <LogoutButton />
       </div>
 

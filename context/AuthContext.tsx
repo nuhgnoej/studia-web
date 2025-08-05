@@ -62,9 +62,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setIsAdmin(data.isAdmin === true);
       } else {
         console.warn("❌ 사용자 문서 여전히 없음");
+        setIsAdmin(false);
       }
     } catch (err) {
       console.error("🔥 refreshProfile() 실패:", err);
+      setIsAdmin(false);
     }
   };
 
