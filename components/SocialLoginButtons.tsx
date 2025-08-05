@@ -5,6 +5,7 @@ import { auth } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { useState } from "react";
+import { ensureUserDocument } from "@/lib/firestoreUtils";
 
 export default function SocialLoginButtons({
   onError,
@@ -19,6 +20,7 @@ export default function SocialLoginButtons({
       setLoading(true);
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
+      await ensureUserDocument();
       router.push("/");
     } catch (err) {
       console.error(err);
@@ -33,10 +35,11 @@ export default function SocialLoginButtons({
 
   return (
     <div className="space-y-3">
+      {/* Google */}
       <button
         onClick={handleGoogleLogin}
         disabled={loading}
-        className="w-full bg-white border border-gray-300 hover:border-gray-400 rounded-lg py-2 flex items-center justify-center space-x-2"
+        className="w-full bg-white border border-gray-300 hover:border-gray-400 rounded-lg py-2 flex items-center justify-center space-x-2 disabled:opacity-50"
       >
         <img src="/logos/google.png" alt="Google" className="w-5 h-5" />
         <span className="text-sm text-gray-800 font-medium">
@@ -44,18 +47,22 @@ export default function SocialLoginButtons({
         </span>
       </button>
 
+      {/* Kakao */}
       <button
         onClick={handleKakaoLogin}
-        className="w-full bg-[#FEE500] hover:bg-[#ffdd00] text-black py-2 rounded-lg text-sm font-medium"
+        className="w-full bg-[#FEE500] hover:bg-[#ffdd00] text-black rounded-lg py-2 flex items-center justify-center space-x-2"
       >
-        카카오로 로그인
+        <img src="/logos/kakao.png" alt="Kakao" className="w-5 h-5" />
+        <span className="text-sm font-medium">카카오로 로그인</span>
       </button>
 
+      {/* Naver */}
       <button
         onClick={handleNaverLogin}
-        className="w-full bg-[#03C75A] hover:bg-[#02b14c] text-white py-2 rounded-lg text-sm font-medium"
+        className="w-full bg-[#03C75A] hover:bg-[#02b14c] text-white rounded-lg py-2 flex items-center justify-center space-x-2"
       >
-        네이버로 로그인
+        <img src="/logos/naver.png" alt="Naver" className="w-5 h-5" />
+        <span className="text-sm font-medium">네이버로 로그인</span>
       </button>
     </div>
   );

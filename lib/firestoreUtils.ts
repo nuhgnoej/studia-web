@@ -1,4 +1,4 @@
-import { db } from "@/lib/firebase";
+import { auth, db } from "@/lib/firebase";
 import {
   doc,
   getDoc,
@@ -33,5 +33,24 @@ export async function moveDocument(
   } catch (err) {
     console.error("📛 문서 이동 실패:", err);
     throw err;
+  }
+}
+
+export async function ensureUserDocument() {
+  const user = auth.currentUser;
+  if (!user) return;
+
+  const ref = doc(db, "users", user.uid);
+  const snap = await getDoc(ref);
+
+  if (!snap.exists()) {
+    await setDoc(ref, {
+      uid: user.uid,
+      email: user.email,
+      displayName: user.displayName,
+      photoURL: user.photoURL,
+      createdAt: new Date().toISOString(),
+      isAdmin: false,
+    });
   }
 }
