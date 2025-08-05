@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { useState } from "react";
 import { ensureUserDocument } from "@/lib/firestoreUtils";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function SocialLoginButtons({
   onError,
@@ -13,6 +14,7 @@ export default function SocialLoginButtons({
   onError?: (msg: string) => void;
 }) {
   const router = useRouter();
+  const { user, refreshProfile } = useAuth();
   const [loading, setLoading] = useState(false);
 
   const handleGoogleLogin = async () => {
@@ -21,6 +23,9 @@ export default function SocialLoginButtons({
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
       await ensureUserDocument();
+      if (user?.uid) {
+        await refreshProfile(user.uid);
+      }
       router.push("/");
     } catch (err) {
       console.error(err);

@@ -20,6 +20,7 @@ interface AuthContextType {
   isLoggedIn: boolean;
   isAdmin: boolean;
   logout: () => Promise<void>;
+  refreshProfile: (uid: string) => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -43,36 +44,31 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // useEffect(() => {
-  //   const unsubscribe = onAuthStateChanged(auth, async (u) => {
-  //     setUser(u);
-  //     setLoading(true);
+  const refreshProfile = async (uid: string) => {
+    try {
+      const docRef = doc(db, "users", uid);
+      let docSnap = await getDoc(docRef);
+      let retryCount = 0;
 
-  //     if (u) {
-  //       try {
-  //         const docRef = doc(db, "Users", u.uid);
-  //         const docSnap = await getDoc(docRef);
+      while (!docSnap.exists() && retryCount < 3) {
+        console.warn(`⏳ 사용자 문서 없음, 재시도 중... (${retryCount + 1}/3)`);
+        await new Promise((res) => setTimeout(res, 300));
+        docSnap = await getDoc(docRef);
+        retryCount++;
+      }
 
-  //         if (docSnap.exists()) {
-  //           setProfile(docSnap.data() as UserProfile);
-  //           setIsAdmin(profile?.isAdmin === true);
-  //         } else {
-  //           setProfile(null);
-  //           setIsAdmin(false);
-  //         }
-  //       } catch (err) {
-  //         console.error("프로필 로딩 오류:", err);
-  //         setProfile(null);
-  //       }
-  //     } else {
-  //       setProfile(null);
-  //     }
-
-  //     setLoading(false);
-  //   });
-
-  //   return () => unsubscribe();
-  // }, []);
+      if (docSnap.exists()) {
+        const data = docSnap.data() as UserProfile;
+        console.log("✅ 사용자 프로필 강제 로드 성공:", data);
+        setProfile(data);
+        setIsAdmin(data.isAdmin === true);
+      } else {
+        console.warn("❌ 사용자 문서 여전히 없음");
+      }
+    } catch (err) {
+      console.error("🔥 refreshProfile() 실패:", err);
+    }
+  };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (u) => {
@@ -83,7 +79,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (u) {
         try {
           const docRef = doc(db, "users", u.uid);
-          const docSnap = await getDoc(docRef);
+          let docSnap = await getDoc(docRef);
+          let retryCount = 0;
+
+          // 🔁 최대 3회까지 재시도 (300ms 간격)
+          while (!docSnap.exists() && retryCount < 3) {
+            console.warn(
+              `⏳ 사용자 문서 없음, 재시도 중... (${retryCount + 1}/3)`
+            );
+            await new Promise((res) => setTimeout(res, 300));
+            docSnap = await getDoc(docRef);
+            retryCount++;
+          }
+
           console.log("📄 Firestore 응답:", docSnap.exists());
 
           if (docSnap.exists()) {
@@ -92,7 +100,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             setProfile(data);
             setIsAdmin(data.isAdmin === true);
           } else {
-            console.warn("❌ 사용자 프로필 없음 (Users 문서 존재하지 않음)");
+            console.warn("❌ 사용자 프로필 없음 (users 문서 존재하지 않음)");
             setProfile(null);
             setIsAdmin(false);
           }
@@ -121,6 +129,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         isLoggedIn: !loading && user !== null,
         isAdmin,
         logout,
+        refreshProfile,
       }}
     >
       {children}
