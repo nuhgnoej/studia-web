@@ -1,40 +1,42 @@
 // app/page.tsx
 "use client";
-
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { auth } from "@/lib/firebase";
-import { onAuthStateChanged } from "firebase/auth";
-import { User } from "firebase/auth";
+import { useAuth } from "@/hooks/useAuth";
+import LoadingIndicator from "@/components/LoadingIndicator";
 import LogoutButton from "@/components/Logout";
 
 export default function HomePage() {
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<User | null>(null);
- 
+  const { user, loading, isLoggedIn, isAdmin } = useAuth();
+
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (u) => {
-      if (!u) {
-        router.push("/login");
-      } else {
-        setUser(u);
-      }
-      setLoading(false);
-    });
+    if (loading) return;
 
-    return () => unsubscribe();
-  }, [router]);
+    if (!isLoggedIn) {
+      router.replace("/login");
+      return;
+    }
 
-   if (loading) return null;
+    if (isAdmin) {
+      router.replace("/admin");
+      return;
+    }
+  }, [loading, isLoggedIn, isAdmin, router]);
 
-    return (
+  if (loading) return <LoadingIndicator />;
+  if (!isLoggedIn || isAdmin) return null; // 분기 처리 중
+
+  return (
     <main className="p-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">studia client web</h1>
+        <h1 className="text-2xl font-bold">📊 Studia 홈페이지</h1>
+        <h2>Welcome, {user?.email}</h2>
+        <h2>Welcome, {user?.displayName}</h2>
         <LogoutButton />
       </div>
 
+      <div className="space-y-12">추후 구현 예정...</div>
     </main>
   );
 }

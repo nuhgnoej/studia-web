@@ -2,15 +2,15 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { signOut } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function LogoutButton() {
   const router = useRouter();
+  const { logout, user, profile } = useAuth();
 
   const handleLogout = async () => {
     try {
-      await signOut(auth);
+      logout;
       router.push("/login");
     } catch (error) {
       console.error("❌ 로그아웃 실패:", error);
@@ -18,11 +18,15 @@ export default function LogoutButton() {
   };
 
   return (
-    <button
-      onClick={handleLogout}
-      className="text-sm text-gray-600 hover:text-red-500 border px-3 py-1 rounded"
-    >
-      로그아웃
-    </button>
+    <div className="flex justify-between p-4">
+      <p>{user?.email || "email unknown"}</p>
+      <p>{profile?.displayName || "unknown"}</p>
+      <button
+        onClick={handleLogout}
+        className="text-sm text-gray-600 hover:text-red-500 border px-3 py-1 rounded"
+      >
+        로그아웃
+      </button>
+    </div>
   );
 }

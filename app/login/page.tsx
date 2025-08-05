@@ -17,8 +17,7 @@ export default function LoginPage() {
     try {
       setLoading(true);
       const auth = getAuth();
-      const res = await signInWithEmailAndPassword(auth, email, pw);
-      const user = res.user;
+      await signInWithEmailAndPassword(auth, email, pw);     
 
        router.push("/");
     } catch (err) {
