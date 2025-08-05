@@ -8,28 +8,20 @@ import LogoutButton from "@/components/Logout";
 
 export default function HomePage() {
   const router = useRouter();
-  const { user, loading, isLoggedIn, isAdmin } = useAuth();
-
-  const [redirecting, setRedirecting] = useState(false);
+  const { user, isAdmin } = useAuth();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (loading) return;
-
-    if (!isLoggedIn) {
-      setRedirecting(true);
+    if (user === null) {
       router.replace("/login");
-      return;
-    }
-
-    if (isAdmin) {
-      setRedirecting(true);
+    } else if (isAdmin === true) {
       router.replace("/admin");
-      return;
+    } else if (isAdmin === false) {
+      setLoading(false);
     }
-  }, [loading, isLoggedIn, isAdmin, router]);
+  }, [user, isAdmin]);
 
-  if (loading || redirecting) return <LoadingIndicator />;
-  if (!isLoggedIn || isAdmin) return null; // 분기 처리 중
+  if (loading) return <LoadingIndicator />;
 
   return (
     <main className="p-8">

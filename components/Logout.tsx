@@ -11,7 +11,7 @@ export default function LogoutButton() {
   const handleLogout = async () => {
     try {
       await logout();
-      // router.push("/login");
+      router.push("/login");
     } catch (error) {
       console.error("❌ 로그아웃 실패:", error);
     }

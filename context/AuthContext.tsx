@@ -16,9 +16,7 @@ import { UserProfile } from "@/types/userProfile";
 interface AuthContextType {
   user: User | null;
   profile: UserProfile | null;
-  loading: boolean;
-  isLoggedIn: boolean;
-  isAdmin: boolean;
+  isAdmin: boolean | null;
   logout: () => Promise<void>;
   refreshProfile: (uid: string) => Promise<void>;
 }
@@ -30,13 +28,12 @@ export const AuthContext = createContext<AuthContextType | undefined>(
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
 
   const logout = async () => {
     try {
       await signOut(auth);
-      console.log("✅ signOut 호출 완료:", auth.currentUser); // null이어야 정상
+      console.log("✅ signOut 호출 완료:", auth.currentUser);
       setUser(null);
       setProfile(null);
       setIsAdmin(false);
@@ -75,7 +72,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const unsubscribe = onAuthStateChanged(auth, async (u) => {
       console.log("🔔 인증 상태 변경:", u?.uid || "로그아웃됨");
       setUser(u);
-      setLoading(true);
 
       if (u) {
         try {
@@ -114,8 +110,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setProfile(null);
         setIsAdmin(false);
       }
-
-      setLoading(false);
     });
 
     return () => unsubscribe();
@@ -126,8 +120,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       value={{
         user,
         profile,
-        loading,
-        isLoggedIn: !loading && user !== null,
         isAdmin,
         logout,
         refreshProfile,
