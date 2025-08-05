@@ -36,6 +36,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = async () => {
     try {
       await signOut(auth);
+      console.log("✅ signOut 호출 완료:", auth.currentUser); // null이어야 정상
       setUser(null);
       setProfile(null);
       setIsAdmin(false);
