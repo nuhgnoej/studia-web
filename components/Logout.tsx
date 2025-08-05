@@ -10,7 +10,7 @@ export default function LogoutButton() {
 
   const handleLogout = async () => {
     try {
-      logout;
+      await logout();
       setTimeout(() => {
         router.push("/login");
       }, 100);
