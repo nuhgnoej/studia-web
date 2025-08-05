@@ -18,9 +18,7 @@ export default function LoginPage() {
       setLoading(true);
       const auth = getAuth();
       await signInWithEmailAndPassword(auth, email, pw);
-      setTimeout(() => {
-        router.push("/");
-      }, 100);
+      router.push("/");
     } catch (err) {
       console.error(err);
       setError("로그인 실패");

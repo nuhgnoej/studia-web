@@ -1,6 +1,6 @@
 // app/page.tsx
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import LoadingIndicator from "@/components/LoadingIndicator";
@@ -10,21 +10,25 @@ export default function HomePage() {
   const router = useRouter();
   const { user, loading, isLoggedIn, isAdmin } = useAuth();
 
+  const [redirecting, setRedirecting] = useState(false);
+
   useEffect(() => {
     if (loading) return;
 
     if (!isLoggedIn) {
+      setRedirecting(true);
       router.replace("/login");
       return;
     }
 
     if (isAdmin) {
+      setRedirecting(true);
       router.replace("/admin");
       return;
     }
   }, [loading, isLoggedIn, isAdmin, router]);
 
-  if (loading) return <LoadingIndicator />;
+  if (loading || redirecting) return <LoadingIndicator />;
   if (!isLoggedIn || isAdmin) return null; // 분기 처리 중
 
   return (
