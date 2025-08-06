@@ -1,36 +1,82 @@
-// app/page.tsx
+// app/login/page.tsx
 "use client";
-import { useEffect, useState } from "react";
+
+import { useState } from "react";
+import { signInWithEmailAndPassword, getAuth } from "firebase/auth";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/hooks/useAuth";
-import LoadingIndicator from "@/components/LoadingIndicator";
-import LogoutButton from "@/components/Logout";
+import SocialLoginButtons from "@/components/SocialLoginButtons";
 
-export default function HomePage() {
+export default function LoginPage() {
   const router = useRouter();
-  const { user, isAdmin } = useAuth();
-  const [loading, setLoading] = useState(true);
+  const [email, setEmail] = useState("");
+  const [pw, setPw] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (user === null) {
-      router.replace("/login");
-    } else if (isAdmin === true) {
-      router.replace("/admin");
-    } else if (isAdmin === false) {
+  const handleLogin = async () => {
+    try {
+      setLoading(true);
+      const auth = getAuth();
+      await signInWithEmailAndPassword(auth, email, pw);
+      router.push("/mid");
+    } catch (err) {
+      console.error(err);
+      setError("로그인 실패");
+    } finally {
       setLoading(false);
     }
-  }, [user, isAdmin]);
-
-  if (loading) return <LoadingIndicator />;
+  };
 
   return (
-    <main className="p-8 max-w-5xl mx-auto">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">📊 Studia 홈페이지</h1>
-        <LogoutButton />
-      </div>
+    <main className="min-h-screen flex items-center justify-center bg-gray-200 px-4">
+      <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-lg">
+        <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">
+          🔐 Studia 로그인
+        </h1>
 
-      <div className="space-y-12">추후 구현 예정...</div>
+        <div className="space-y-4">
+          <input
+            type="email"
+            placeholder="이메일"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
+          />
+          <input
+            type="password"
+            placeholder="비밀번호"
+            value={pw}
+            onChange={(e) => setPw(e.target.value)}
+            className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
+          />
+
+          <button
+            onClick={handleLogin}
+            disabled={loading}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg text-sm font-medium flex items-center justify-center disabled:opacity-50"
+          >
+            {loading ? (
+              <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+            ) : (
+              "로그인"
+            )}
+          </button>
+
+          {error && <p className="text-sm text-red-600 text-center">{error}</p>}
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300" />
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="bg-white px-2 text-gray-500">
+                또는 소셜 로그인
+              </span>
+            </div>
+          </div>
+
+          <SocialLoginButtons onError={setError} />
+        </div>
+      </div>
     </main>
   );
 }

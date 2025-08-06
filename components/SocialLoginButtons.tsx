@@ -26,7 +26,7 @@ export default function SocialLoginButtons({
       if (user?.uid) {
         await refreshProfile(user.uid);
       }
-      router.push("/");
+      router.push("/mid");
     } catch (err) {
       console.error(err);
       onError?.("Google 로그인 실패");
