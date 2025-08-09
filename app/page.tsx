@@ -1,13 +1,13 @@
 // app/page.tsx
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { signInWithEmailAndPassword, getAuth } from "firebase/auth";
 import { useRouter, useSearchParams } from "next/navigation";
 import SocialLoginButtons from "@/components/SocialLoginButtons";
 import { useAuth } from "@/hooks/useAuth";
 
-export default function LoginPage() {
+function LoginInner() {
   const router = useRouter();
   const search = useSearchParams();
   const next = search.get("next");
@@ -18,12 +18,25 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // 이미 로그인된 경우 우회
+  useEffect(() => {
+    if (!ready) return;
+    if (user) {
+      router.replace(
+        next ? `/after-login?next=${encodeURIComponent(next)}` : "/after-login"
+      );
+    }
+  }, [ready, user, next, router]);
+
   const handleLogin = async () => {
     try {
       setLoading(true);
       const auth = getAuth();
       await signInWithEmailAndPassword(auth, email, pw);
-      router.push("/after-login");
+      // ✅ 로그인 성공 시 next 전달
+      router.replace(
+        next ? `/after-login?next=${encodeURIComponent(next)}` : "/after-login"
+      );
     } catch (err) {
       console.error(err);
       setError("로그인 실패");
@@ -31,16 +44,6 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    if (!ready) return;
-    if (user) {
-      // 이미 로그인됨 → after-login에서 최종 분기
-      router.replace(
-        next ? `/after-login?next=${encodeURIComponent(next)}` : "/after-login"
-      );
-    }
-  }, [ready, user, next, router]);
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-gray-200 px-4">
@@ -67,7 +70,7 @@ export default function LoginPage() {
 
           <button
             onClick={handleLogin}
-            disabled={loading}
+            disabled={loading || !email || !pw}
             className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg text-sm font-medium flex items-center justify-center disabled:opacity-50"
           >
             {loading ? (
@@ -78,6 +81,7 @@ export default function LoginPage() {
           </button>
 
           {error && <p className="text-sm text-red-600 text-center">{error}</p>}
+
           <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-300" />
@@ -93,5 +97,13 @@ export default function LoginPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginInner />
+    </Suspense>
   );
 }
