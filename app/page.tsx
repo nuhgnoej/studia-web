@@ -5,7 +5,7 @@ import { Suspense, useEffect, useState } from "react";
 import { signInWithEmailAndPassword, getAuth } from "firebase/auth";
 import { useRouter, useSearchParams } from "next/navigation";
 import SocialLoginButtons from "@/components/SocialLoginButtons";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/context/AuthContext";
 
 function LoginInner() {
   const router = useRouter();

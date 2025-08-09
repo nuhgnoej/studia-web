@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { useState } from "react";
 import { ensureUserDocument } from "@/lib/firestoreUtils";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/context/AuthContext";
 
 export default function SocialLoginButtons({
   onError,
