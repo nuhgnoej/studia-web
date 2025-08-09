@@ -1,13 +1,18 @@
-// app/login/page.tsx
+// app/page.tsx
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { signInWithEmailAndPassword, getAuth } from "firebase/auth";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import SocialLoginButtons from "@/components/SocialLoginButtons";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function LoginPage() {
   const router = useRouter();
+  const search = useSearchParams();
+  const next = search.get("next");
+  const { ready, user } = useAuth();
+
   const [email, setEmail] = useState("");
   const [pw, setPw] = useState("");
   const [error, setError] = useState("");
@@ -18,7 +23,7 @@ export default function LoginPage() {
       setLoading(true);
       const auth = getAuth();
       await signInWithEmailAndPassword(auth, email, pw);
-      router.push("/mid");
+      router.push("/after-login");
     } catch (err) {
       console.error(err);
       setError("로그인 실패");
@@ -26,6 +31,16 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (!ready) return;
+    if (user) {
+      // 이미 로그인됨 → after-login에서 최종 분기
+      router.replace(
+        next ? `/after-login?next=${encodeURIComponent(next)}` : "/after-login"
+      );
+    }
+  }, [ready, user, next, router]);
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-gray-200 px-4">

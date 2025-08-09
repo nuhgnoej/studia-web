@@ -17,6 +17,7 @@ interface AuthContextType {
   user: User | null;
   profile: UserProfile | null;
   isAdmin: boolean | null;
+  ready: boolean;
   logout: () => Promise<void>;
   refreshProfile: (uid: string) => Promise<void>;
 }
@@ -29,6 +30,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
+  const [ready, setReady] = useState(false);
 
   const logout = async () => {
     try {
@@ -107,6 +109,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           console.error("🔥 Firestore에서 프로필 로딩 실패:", err);
           setProfile(null);
           setIsAdmin(false);
+        } finally {
+          setReady(true); // ✅ 최종상태 신호
         }
       } else {
         setProfile(null);
@@ -123,6 +127,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         user,
         profile,
         isAdmin,
+        ready,
         logout,
         refreshProfile,
       }}
