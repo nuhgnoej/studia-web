@@ -4,8 +4,11 @@ import { collection, getDocs } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { ArchiveCard } from "./ArchiveCard";
 import { cardStyles } from "./Studio.styles";
+import { useAuth } from "@/context/AuthContext";
 
 export const ArchiveList = ({ collectionName }: { collectionName: string }) => {
+  const { user } = useAuth();
+
   const [archives, setArchives] = useState<ArchiveData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -31,8 +34,14 @@ export const ArchiveList = ({ collectionName }: { collectionName: string }) => {
         setLoading(false);
       }
     };
-    fetchArchives();
-  }, [collectionName]);
+
+    if (user) {
+      fetchArchives();
+    } else {
+      setLoading(false);
+      setArchives([]);
+    }
+  }, [collectionName, user]);
 
   if (loading) return <p>데이터를 불러오는 중입니다...</p>;
   if (error) return <p style={{ color: "red" }}>{error}</p>;

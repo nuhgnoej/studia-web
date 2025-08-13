@@ -6,6 +6,7 @@ export type ArchiveItem = {
   uploader: string;
   description: string;
   questionsCount: number;
+  storagePath: string;
 };
 
 export interface ArchiveData {
@@ -16,4 +17,5 @@ export interface ArchiveData {
   downloadCount: number;
   uploader: string;
   createdAt: Timestamp;
+  storagePath: string;
 }

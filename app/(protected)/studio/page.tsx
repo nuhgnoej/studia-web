@@ -3,8 +3,6 @@ import React, { useState } from "react";
 import JsonEditor from "@/components/studio/JsonEditor";
 import PageHeader from "@/components/PageHeader";
 import Community from "@/components/studio/Community";
-import OfficialArchive from "@/components/studio/OfficialArchive";
-import CommunityArchive from "@/components/studio/CommunityArchive";
 import { ArchiveTabContent } from "@/components/studio/archive/ArchiveTabContent";
 
 // --- 탭 데이터 구조 변경 ---
