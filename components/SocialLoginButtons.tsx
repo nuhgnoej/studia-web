@@ -1,8 +1,9 @@
 // components/SocialLoginButtons.tsx
+
 "use client";
 
 import { auth } from "@/lib/firebase/firebase";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { useState } from "react";
 import { ensureUserDocument } from "@/lib/firebase/firestoreUtils";
@@ -14,10 +15,13 @@ export default function SocialLoginButtons({
   onError?: (msg: string) => void;
 }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { user, refreshProfile } = useAuth();
   const [loading, setLoading] = useState(false);
 
   const handleGoogleLogin = async () => {
+    const next = searchParams.get("next");
+
     try {
       setLoading(true);
       const provider = new GoogleAuthProvider();
@@ -26,7 +30,9 @@ export default function SocialLoginButtons({
       if (user?.uid) {
         await refreshProfile(user.uid);
       }
-      router.push("/mid");
+      router.replace(
+        next ? `/after-login?next=${encodeURIComponent(next)}` : "/after-login"
+      );
     } catch (err) {
       console.error(err);
       onError?.("Google 로그인 실패");
@@ -41,6 +47,7 @@ export default function SocialLoginButtons({
   return (
     <div className="space-y-3">
       {/* Google */}
+
       <button
         onClick={handleGoogleLogin}
         disabled={loading}
@@ -53,6 +60,7 @@ export default function SocialLoginButtons({
       </button>
 
       {/* Kakao */}
+
       <button
         onClick={handleKakaoLogin}
         className="w-full bg-[#FEE500] hover:bg-[#ffdd00] text-black rounded-lg py-2 flex items-center justify-center space-x-2"
@@ -62,6 +70,7 @@ export default function SocialLoginButtons({
       </button>
 
       {/* Naver */}
+
       <button
         onClick={handleNaverLogin}
         className="w-full bg-[#03C75A] hover:bg-[#02b14c] text-white rounded-lg py-2 flex items-center justify-center space-x-2"
