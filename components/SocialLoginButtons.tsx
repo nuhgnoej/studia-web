@@ -1,11 +1,11 @@
 // components/SocialLoginButtons.tsx
 "use client";
 
-import { auth } from "@/lib/firebase";
+import { auth } from "@/lib/firebase/firebase";
 import { useRouter } from "next/navigation";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { useState } from "react";
-import { ensureUserDocument } from "@/lib/firestoreUtils";
+import { ensureUserDocument } from "@/lib/firebase/firestoreUtils";
 import { useAuth } from "@/context/AuthContext";
 
 export default function SocialLoginButtons({

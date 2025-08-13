@@ -10,7 +10,7 @@ import {
 } from "react";
 import { onAuthStateChanged, signOut, User } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
-import { auth, db } from "@/lib/firebase";
+import { auth, db } from "@/lib/firebase/firebase";
 import { UserProfile } from "@/types/userProfile";
 
 interface AuthContextType {

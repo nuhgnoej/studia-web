@@ -3,9 +3,9 @@
 
 import { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { db } from "@/lib/firebase/firebase";
 import { ArchiveItem } from "@/types/archive";
-import { moveDocument } from "@/lib/firestoreUtils";
+import { moveDocument } from "@/lib/firebase/firestoreUtils";
 
 type CollectionName =
   | "officialArchives"

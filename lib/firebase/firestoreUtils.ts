@@ -1,4 +1,4 @@
-import { auth, db } from "@/lib/firebase";
+import { auth, db } from "@/lib/firebase/firebase";
 import {
   doc,
   getDoc,
