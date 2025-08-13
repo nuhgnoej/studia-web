@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import ArchiveList from "@/components/ArchiveList";
+import ArchiveList from "@/components/admin/ArchiveList";
 
 export default function DatabaseManagementTab() {
   const [refreshFlags, setRefreshFlags] = useState({
