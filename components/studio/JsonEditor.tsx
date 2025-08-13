@@ -1,7 +1,7 @@
 "use client";
 import { QuizData } from "@/types/question";
 import { useEffect, useState } from "react";
-import LoadingIndicator from "./LoadingIndicator";
+import LoadingIndicator from "../LoadingIndicator";
 import { ref, uploadBytes } from "firebase/storage";
 import { storage } from "@/lib/firebase/firebase";
 import { useAuth } from "@/context/AuthContext";

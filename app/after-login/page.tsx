@@ -31,12 +31,12 @@ function AfterLoginInner() {
 
     if (isSafe && !isSelf) {
       if (wantsAdmin && !isAdmin) {
-        router.replace("/dashboard");
+        router.replace("/studio");
       } else {
         router.replace(next as string);
       }
     } else {
-      router.replace(isAdmin ? "/admin" : "/dashboard");
+      router.replace(isAdmin ? "/admin" : "/studio");
     }
   }, [ready, user, isAdmin, next, router]);
 

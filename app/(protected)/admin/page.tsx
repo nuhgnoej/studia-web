@@ -93,7 +93,7 @@ export default function AdminPage() {
   // 관리자 권한 확인 로직은 그대로 유지
   useEffect(() => {
     if (ready && !isAdmin) {
-      router.replace("/dashboard");
+      router.replace("/studio");
     }
   }, [ready, isAdmin, router]);
 
