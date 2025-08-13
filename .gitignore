@@ -43,3 +43,6 @@ next-env.d.ts
 
 # firebase
 .firebase/
+
+# Firebase service account key - 절대 업로드 금지!
+serviceAccountKey.json
