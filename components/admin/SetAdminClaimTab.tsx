@@ -3,8 +3,18 @@ import React, { useState } from "react";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "@/lib/firebase/firebase"; // 위에서 설정한 functions 인스턴스
 
+// 함수에 전달할 데이터의 타입
+interface RequestData {
+  email: string;
+}
+
+// 함수로부터 받을 데이터의 타입
+interface ResponseData {
+  message: string;
+}
+
 // 클라이언트 측에서 함수를 호출할 때 사용하는 Callable 함수 참조를 생성합니다.
-const setAdminClaimCallable = httpsCallable(functions, "setAdminClaim");
+const setAdminClaimCallable = httpsCallable<RequestData, ResponseData>(functions, "setAdminClaim");
 
 export default function SetAdminClaimTab() {
   const [email, setEmail] = useState("");
