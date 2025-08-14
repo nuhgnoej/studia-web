@@ -1,0 +1,327 @@
+{
+  "metadata": {
+    "id": "wp202408-React-001-O",
+    "title": "리액트 기본 개념 문제세트(객관식)",
+    "description": "리액트 입문자를 위한 기본 개념 점검용 객관식 문제 10문항",
+    "subject": "리액트(객관식)",
+    "category": [
+      "React",
+      "Frontend"
+    ],
+    "difficulty": "Beginner",
+    "version": "v1.0",
+    "created_at": "2025-08-04",
+    "updated_at": "2025-08-04",
+    "author": "ChatGPT + User",
+    "source": "직접 제작",
+    "tags": [
+      "React",
+      "JavaScript",
+      "프론트엔드"
+    ],
+    "license": "CC BY-NC-SA",
+    "num_questions": 10
+  },
+  "questions": [
+    {
+      "id": 1,
+      "type": "objective",
+      "question": {
+        "questionText": "React에서 상태(state)를 관리할 때 사용하는 훅은?",
+        "questionExplanation": []
+      },
+      "choices": [
+        {
+          "choice": "useEffect",
+          "choiceExplanation": ""
+        },
+        {
+          "choice": "useContext",
+          "choiceExplanation": ""
+        },
+        {
+          "choice": "useRef",
+          "choiceExplanation": ""
+        }
+      ],
+      "answer": {
+        "answerText": "useState",
+        "answerExplanation": "`useState`는 React 컴포넌트에서 상태를 선언하고 관리하기 위한 기본적인 훅이다."
+      },
+      "tags": [
+        "React",
+        "Hooks"
+      ]
+    },
+    {
+      "id": 2,
+      "type": "objective",
+      "question": {
+        "questionText": "JSX에서 여러 줄을 반환할 때 반드시 필요한 요소는?",
+        "questionExplanation": []
+      },
+      "choices": [
+        {
+          "choice": "if문",
+          "choiceExplanation": ""
+        },
+        {
+          "choice": "루프문",
+          "choiceExplanation": ""
+        },
+        {
+          "choice": "변수 선언",
+          "choiceExplanation": ""
+        }
+      ],
+      "answer": {
+        "answerText": "하나의 부모 요소",
+        "answerExplanation": "JSX에서는 반드시 하나의 부모 요소로 감싸야 여러 줄의 요소를 반환할 수 있다."
+      },
+      "tags": [
+        "JSX",
+        "React 문법"
+      ]
+    },
+    {
+      "id": 3,
+      "type": "objective",
+      "question": {
+        "questionText": "React의 가상 DOM(Virtual DOM)의 주된 목적은?",
+        "questionExplanation": []
+      },
+      "choices": [
+        {
+          "choice": "서버와 직접 통신하기 위함",
+          "choiceExplanation": ""
+        },
+        {
+          "choice": "브라우저의 CSS를 직접 조작하기 위함",
+          "choiceExplanation": ""
+        },
+        {
+          "choice": "로컬 스토리지를 조작하기 위함",
+          "choiceExplanation": ""
+        }
+      ],
+      "answer": {
+        "answerText": "DOM 변경을 최소화하여 렌더링 성능 향상",
+        "answerExplanation": "가상 DOM은 실제 DOM 변경을 최소화하여 앱의 성능을 높이기 위한 React의 핵심 기술이다."
+      },
+      "tags": [
+        "React",
+        "성능"
+      ]
+    },
+    {
+      "id": 4,
+      "type": "objective",
+      "question": {
+        "questionText": "React 컴포넌트에서 side effect를 처리할 때 사용하는 훅은?",
+        "questionExplanation": []
+      },
+      "choices": [
+        {
+          "choice": "useMemo",
+          "choiceExplanation": ""
+        },
+        {
+          "choice": "useState",
+          "choiceExplanation": ""
+        },
+        {
+          "choice": "useReducer",
+          "choiceExplanation": ""
+        }
+      ],
+      "answer": {
+        "answerText": "useEffect",
+        "answerExplanation": "`useEffect`는 데이터 가져오기, 타이머 설정, DOM 조작 등 부수 효과(side effect)를 처리할 때 사용된다."
+      },
+      "tags": [
+        "React",
+        "Hooks"
+      ]
+    },
+    {
+      "id": 5,
+      "type": "objective",
+      "question": {
+        "questionText": "React에서 컴포넌트 간 상태 공유를 위해 사용하는 컨텍스트 API는?",
+        "questionExplanation": []
+      },
+      "choices": [
+        {
+          "choice": "Redux",
+          "choiceExplanation": ""
+        },
+        {
+          "choice": "Recoil",
+          "choiceExplanation": ""
+        },
+        {
+          "choice": "MobX",
+          "choiceExplanation": ""
+        }
+      ],
+      "answer": {
+        "answerText": "useContext",
+        "answerExplanation": "`useContext` 훅은 Context API를 통해 전역 상태를 공유할 수 있게 해준다."
+      },
+      "tags": [
+        "React",
+        "상태 관리"
+      ]
+    },
+    {
+      "id": 6,
+      "type": "objective",
+      "question": {
+        "questionText": "React에서 키(key) 속성이 중요한 이유는?",
+        "questionExplanation": []
+      },
+      "choices": [
+        {
+          "choice": "HTML 유효성 검사를 위해",
+          "choiceExplanation": ""
+        },
+        {
+          "choice": "컴포넌트의 스타일을 지정하기 위해",
+          "choiceExplanation": ""
+        },
+        {
+          "choice": "컴포넌트를 전역 등록하기 위해",
+          "choiceExplanation": ""
+        }
+      ],
+      "answer": {
+        "answerText": "리스트에서 항목 식별 및 성능 최적화를 위해",
+        "answerExplanation": "key는 리스트 렌더링 시 항목의 고유성을 보장하여 React의 diff 알고리즘 성능을 높인다."
+      },
+      "tags": [
+        "리스트 렌더링",
+        "React 성능"
+      ]
+    },
+    {
+      "id": 7,
+      "type": "objective",
+      "question": {
+        "questionText": "React에서 props의 주된 목적은?",
+        "questionExplanation": []
+      },
+      "choices": [
+        {
+          "choice": "컴포넌트 상태를 초기화하기 위해",
+          "choiceExplanation": ""
+        },
+        {
+          "choice": "컴포넌트 내부에서 비동기 처리를 위해",
+          "choiceExplanation": ""
+        },
+        {
+          "choice": "컴포넌트의 DOM 요소를 직접 접근하기 위해",
+          "choiceExplanation": ""
+        }
+      ],
+      "answer": {
+        "answerText": "상위 컴포넌트에서 하위 컴포넌트로 데이터 전달",
+        "answerExplanation": "props는 부모 컴포넌트에서 자식 컴포넌트로 데이터를 전달하기 위한 메커니즘이다."
+      },
+      "tags": [
+        "React",
+        "props"
+      ]
+    },
+    {
+      "id": 8,
+      "type": "objective",
+      "question": {
+        "questionText": "React에서 상태를 직접 수정하면 안 되는 이유는?",
+        "questionExplanation": []
+      },
+      "choices": [
+        {
+          "choice": "성능이 나빠지기 때문에",
+          "choiceExplanation": ""
+        },
+        {
+          "choice": "오류 로그가 자동으로 남지 않기 때문에",
+          "choiceExplanation": ""
+        },
+        {
+          "choice": "컴포넌트가 다시 렌더링되지 않기 때문에",
+          "choiceExplanation": ""
+        }
+      ],
+      "answer": {
+        "answerText": "컴포넌트가 다시 렌더링되지 않기 때문에",
+        "answerExplanation": "상태는 `setState`를 통해 변경해야 하며, 직접 수정하면 React가 변경 사항을 감지하지 못한다."
+      },
+      "tags": [
+        "React",
+        "상태 관리"
+      ]
+    },
+    {
+      "id": 9,
+      "type": "objective",
+      "question": {
+        "questionText": "React의 컴포넌트는 기본적으로 어떤 성질을 가지는가?",
+        "questionExplanation": []
+      },
+      "choices": [
+        {
+          "choice": "상속 기반",
+          "choiceExplanation": ""
+        },
+        {
+          "choice": "변경 불가능한 값",
+          "choiceExplanation": ""
+        },
+        {
+          "choice": "DOM 직접 조작 중심",
+          "choiceExplanation": ""
+        }
+      ],
+      "answer": {
+        "answerText": "재사용 가능한 UI 단위",
+        "answerExplanation": "React 컴포넌트는 UI를 구성하는 재사용 가능한 단위로 설계된다."
+      },
+      "tags": [
+        "React",
+        "컴포넌트"
+      ]
+    },
+    {
+      "id": 10,
+      "type": "objective",
+      "question": {
+        "questionText": "React에서 memoization을 통해 성능 최적화를 하는 훅은?",
+        "questionExplanation": []
+      },
+      "choices": [
+        {
+          "choice": "useEffect",
+          "choiceExplanation": ""
+        },
+        {
+          "choice": "useState",
+          "choiceExplanation": ""
+        },
+        {
+          "choice": "useCallback",
+          "choiceExplanation": ""
+        }
+      ],
+      "answer": {
+        "answerText": "useMemo",
+        "answerExplanation": "`useMemo`는 연산 결과를 메모이제이션하여 불필요한 계산을 방지하고 성능을 높인다."
+      },
+      "tags": [
+        "React",
+        "성능 최적화"
+      ]
+    }
+  ]
+}

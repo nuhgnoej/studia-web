@@ -1,0 +1,327 @@
+{
+  "metadata": {
+    "id": "wp202408-RN-001-O",
+    "title": "리액트 네이티브 기본 개념 문제세트(객관식)",
+    "description": "리액트 네이티브 초급자를 위한 기초 문법 및 컴포넌트 점검용 객관식 문제 10문항",
+    "subject": "리액트 네이티브(객관식)",
+    "category": [
+      "React Native",
+      "모바일 개발"
+    ],
+    "difficulty": "Beginner",
+    "version": "v1.0",
+    "created_at": "2025-08-04",
+    "updated_at": "2025-08-04",
+    "author": "ChatGPT + User",
+    "source": "직접 제작",
+    "tags": [
+      "React Native",
+      "모바일",
+      "프론트엔드"
+    ],
+    "license": "CC BY-NC-SA",
+    "num_questions": 10
+  },
+  "questions": [
+    {
+      "id": 1,
+      "type": "objective",
+      "question": {
+        "questionText": "React Native 앱에서 화면을 구성할 때 주로 사용하는 컴포넌트는?",
+        "questionExplanation": []
+      },
+      "choices": [
+        {
+          "choice": "div",
+          "choiceExplanation": ""
+        },
+        {
+          "choice": "section",
+          "choiceExplanation": ""
+        },
+        {
+          "choice": "article",
+          "choiceExplanation": ""
+        }
+      ],
+      "answer": {
+        "answerText": "View",
+        "answerExplanation": "`View`는 웹의 `div`와 비슷한 컨테이너 역할을 하는 기본 UI 컴포넌트이다."
+      },
+      "tags": [
+        "기본 컴포넌트",
+        "View"
+      ]
+    },
+    {
+      "id": 2,
+      "type": "objective",
+      "question": {
+        "questionText": "React Native에서 텍스트를 표시할 때 사용하는 컴포넌트는?",
+        "questionExplanation": []
+      },
+      "choices": [
+        {
+          "choice": "Paragraph",
+          "choiceExplanation": ""
+        },
+        {
+          "choice": "Span",
+          "choiceExplanation": ""
+        },
+        {
+          "choice": "Label",
+          "choiceExplanation": ""
+        }
+      ],
+      "answer": {
+        "answerText": "Text",
+        "answerExplanation": "`Text` 컴포넌트는 텍스트를 화면에 출력하는 데 사용된다."
+      },
+      "tags": [
+        "Text",
+        "기본 컴포넌트"
+      ]
+    },
+    {
+      "id": 3,
+      "type": "objective",
+      "question": {
+        "questionText": "React Native에서 스타일을 지정하는 기본 방식은?",
+        "questionExplanation": []
+      },
+      "choices": [
+        {
+          "choice": "CSS 파일 불러오기",
+          "choiceExplanation": ""
+        },
+        {
+          "choice": "style 태그 내 작성",
+          "choiceExplanation": ""
+        },
+        {
+          "choice": "inline script 사용",
+          "choiceExplanation": ""
+        }
+      ],
+      "answer": {
+        "answerText": "JavaScript 객체 형태로 스타일 정의",
+        "answerExplanation": "React Native는 CSS 대신 JS 객체를 통해 스타일을 작성한다. 예: `{ padding: 10 }`"
+      },
+      "tags": [
+        "스타일링",
+        "StyleSheet"
+      ]
+    },
+    {
+      "id": 4,
+      "type": "objective",
+      "question": {
+        "questionText": "React Native 앱에서 네이티브 기능을 테스트하고 실행할 수 있는 도구는?",
+        "questionExplanation": []
+      },
+      "choices": [
+        {
+          "choice": "CodePen",
+          "choiceExplanation": ""
+        },
+        {
+          "choice": "StackBlitz",
+          "choiceExplanation": ""
+        },
+        {
+          "choice": "Jupyter",
+          "choiceExplanation": ""
+        }
+      ],
+      "answer": {
+        "answerText": "Expo",
+        "answerExplanation": "Expo는 빠르게 React Native 앱을 개발하고 테스트할 수 있는 도구이자 플랫폼이다."
+      },
+      "tags": [
+        "개발도구",
+        "Expo"
+      ]
+    },
+    {
+      "id": 5,
+      "type": "objective",
+      "question": {
+        "questionText": "React Native에서 버튼 클릭 시 동작을 지정하려면 어떤 속성을 사용해야 하는가?",
+        "questionExplanation": []
+      },
+      "choices": [
+        {
+          "choice": "href",
+          "choiceExplanation": ""
+        },
+        {
+          "choice": "src",
+          "choiceExplanation": ""
+        },
+        {
+          "choice": "type",
+          "choiceExplanation": ""
+        }
+      ],
+      "answer": {
+        "answerText": "onPress",
+        "answerExplanation": "`onPress`는 사용자의 터치 이벤트에 반응하는 주요 핸들러이다."
+      },
+      "tags": [
+        "이벤트",
+        "onPress"
+      ]
+    },
+    {
+      "id": 6,
+      "type": "objective",
+      "question": {
+        "questionText": "React Native에서 앱 전체의 화면 전환을 관리하는 라이브러리는?",
+        "questionExplanation": []
+      },
+      "choices": [
+        {
+          "choice": "react-redux",
+          "choiceExplanation": ""
+        },
+        {
+          "choice": "react-query",
+          "choiceExplanation": ""
+        },
+        {
+          "choice": "axios",
+          "choiceExplanation": ""
+        }
+      ],
+      "answer": {
+        "answerText": "react-navigation",
+        "answerExplanation": "`react-navigation`은 화면 간 이동 및 스택/탭 구조를 구현할 때 사용된다."
+      },
+      "tags": [
+        "navigation",
+        "react-navigation"
+      ]
+    },
+    {
+      "id": 7,
+      "type": "objective",
+      "question": {
+        "questionText": "React Native에서 비동기 데이터를 가져오기 위해 가장 일반적으로 사용하는 API는?",
+        "questionExplanation": []
+      },
+      "choices": [
+        {
+          "choice": "XMLHttpRequest",
+          "choiceExplanation": ""
+        },
+        {
+          "choice": "document.querySelector",
+          "choiceExplanation": ""
+        },
+        {
+          "choice": "localStorage",
+          "choiceExplanation": ""
+        }
+      ],
+      "answer": {
+        "answerText": "fetch",
+        "answerExplanation": "`fetch`는 웹과 모바일 모두에서 지원되는 비동기 HTTP 통신 함수이다."
+      },
+      "tags": [
+        "API 요청",
+        "fetch"
+      ]
+    },
+    {
+      "id": 8,
+      "type": "objective",
+      "question": {
+        "questionText": "React Native에서 스크롤 가능한 뷰를 만들고 싶을 때 사용하는 컴포넌트는?",
+        "questionExplanation": []
+      },
+      "choices": [
+        {
+          "choice": "FlatList",
+          "choiceExplanation": ""
+        },
+        {
+          "choice": "Form",
+          "choiceExplanation": ""
+        },
+        {
+          "choice": "Canvas",
+          "choiceExplanation": ""
+        }
+      ],
+      "answer": {
+        "answerText": "ScrollView",
+        "answerExplanation": "`ScrollView`는 내부 콘텐츠가 화면을 넘을 경우 스크롤을 제공한다."
+      },
+      "tags": [
+        "UI",
+        "ScrollView"
+      ]
+    },
+    {
+      "id": 9,
+      "type": "objective",
+      "question": {
+        "questionText": "React Native에서 텍스트 입력을 받는 데 사용하는 컴포넌트는?",
+        "questionExplanation": []
+      },
+      "choices": [
+        {
+          "choice": "InputText",
+          "choiceExplanation": ""
+        },
+        {
+          "choice": "FormInput",
+          "choiceExplanation": ""
+        },
+        {
+          "choice": "EditText",
+          "choiceExplanation": ""
+        }
+      ],
+      "answer": {
+        "answerText": "TextInput",
+        "answerExplanation": "`TextInput`은 사용자로부터 문자열 입력을 받을 수 있는 컴포넌트이다."
+      },
+      "tags": [
+        "TextInput",
+        "입력"
+      ]
+    },
+    {
+      "id": 10,
+      "type": "objective",
+      "question": {
+        "questionText": "React Native에서 플랫폼(OS)에 따라 다른 코드를 실행하려면?",
+        "questionExplanation": []
+      },
+      "choices": [
+        {
+          "choice": "window.OS",
+          "choiceExplanation": ""
+        },
+        {
+          "choice": "usePlatform()",
+          "choiceExplanation": ""
+        },
+        {
+          "choice": "getDeviceType()",
+          "choiceExplanation": ""
+        }
+      ],
+      "answer": {
+        "answerText": "Platform.OS",
+        "answerExplanation": "`Platform.OS`를 사용하면 `ios` 또는 `android`에 따라 분기 처리를 할 수 있다."
+      },
+      "tags": [
+        "Platform",
+        "크로스플랫폼"
+      ]
+    }
+  ]
+}
