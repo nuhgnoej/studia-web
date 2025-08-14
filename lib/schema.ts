@@ -60,7 +60,8 @@ const QuestionSchema = Schema.object({
   properties: {
     id: Schema.number({ description: "질문의 순서 번호 (1부터 시작)" }),
     type: Schema.string({
-      description: "질문 유형 (예: multiple-choice, short-answer)",
+      description: "질문 유형",
+      enum: ["objective", "subjective"],
     }),
     question: QuestionContentSchema,
     choices: Schema.array({

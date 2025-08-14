@@ -1,4 +1,4 @@
-"use client"; // 클라이언트 컴포넌트로 지정
+"use client";
 
 import { useState } from "react";
 import { model } from "@/lib/firebase/firebase";
@@ -63,7 +63,7 @@ export default function AIEditor() {
           <div>
             <h3>생성된 JSON 결과:</h3>
             <pre style={styles.pre}>
-              <code>{resultText}</code>
+              <code>{JSON.stringify(JSON.parse(resultText), null, 2)}</code>
             </pre>
           </div>
         )}
@@ -72,7 +72,6 @@ export default function AIEditor() {
   );
 }
 
-// 간단한 인라인 스타일
 const styles: { [key: string]: React.CSSProperties } = {
   form: {
     display: "flex",
