@@ -1,16 +1,44 @@
 "use client";
 import React, { useState } from "react";
-import JsonEditor from "@/components/studio/JsonEditor";
 import PageHeader from "@/components/PageHeader";
 import Community from "@/components/studio/Community";
 import { ArchiveTabContent } from "@/components/studio/archive/ArchiveTabContent";
+import EditorTabs from "@/components/studio/editor/EditorTabs";
 
 // --- 탭 데이터 구조 변경 ---
 const TABS = [
-  { id: "jsonEditor", label: "JSON 편집기", component: <JsonEditor /> },
+  { id: "editor", label: "에디터", component: <EditorTabs /> },
   { id: "archive", label: "아카이브", component: <ArchiveTabContent /> },
   { id: "community", label: "커뮤니티", component: <Community /> },
 ];
+
+export default function Studio() {
+  const [activeTab, setActiveTab] = useState("jsonEditor");
+
+  return (
+    <main className="p-4 md:p-8 max-w-5xl mx-auto">
+      <PageHeader title="Studia for Web" />
+      <div style={styles.tabContainer}>
+        {TABS.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            style={{
+              ...styles.tabButton,
+              ...(activeTab === tab.id ? styles.activeTabButton : {}),
+            }}
+          >
+            {tab.label}
+            {activeTab === tab.id && <div style={styles.activeTabIndicator} />}
+          </button>
+        ))}
+      </div>
+      <div style={styles.tabContent}>
+        {TABS.find((tab) => tab.id === activeTab)?.component}
+      </div>
+    </main>
+  );
+}
 
 // --- 스타일 객체 ---
 const styles: { [key: string]: React.CSSProperties } = {
@@ -69,31 +97,3 @@ const styles: { [key: string]: React.CSSProperties } = {
     borderColor: "#d2e3fc",
   },
 };
-
-export default function Studio() {
-  const [activeTab, setActiveTab] = useState("jsonEditor");
-
-  return (
-    <main className="p-4 md:p-8 max-w-5xl mx-auto">
-      <PageHeader title="Studia for Web" />
-      <div style={styles.tabContainer}>
-        {TABS.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            style={{
-              ...styles.tabButton,
-              ...(activeTab === tab.id ? styles.activeTabButton : {}),
-            }}
-          >
-            {tab.label}
-            {activeTab === tab.id && <div style={styles.activeTabIndicator} />}
-          </button>
-        ))}
-      </div>
-      <div style={styles.tabContent}>
-        {TABS.find((tab) => tab.id === activeTab)?.component}
-      </div>
-    </main>
-  );
-}

@@ -27,12 +27,17 @@ export interface AnswerContent {
   answerExplanation: string;
 }
 
+export interface Choice {
+  choice: string;
+  choiceExplanation: string;
+}
+
 // 최종 질문 타입을 정의합니다.
 export interface Question {
   id: number;
   type: string;
   question: QuestionContent;
-  choices: string[];
+  choices: Choice[];
   answer: AnswerContent;
   tags: string[];
 }

@@ -1,11 +1,12 @@
 "use client";
 import { QuizData } from "@/types/question";
 import { useEffect, useState } from "react";
-import LoadingIndicator from "../LoadingIndicator";
+
 import { ref, uploadBytes } from "firebase/storage";
 import { storage } from "@/lib/firebase/firebase";
 import { useAuth } from "@/context/AuthContext";
 import { saveArchiveMetadata } from "@/lib/firebase/archive";
+import LoadingIndicator from "@/components/LoadingIndicator";
 
 // 메타데이터의 초기값 정의
 const initialMetadata = {
