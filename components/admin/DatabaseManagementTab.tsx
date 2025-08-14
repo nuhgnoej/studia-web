@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import ArchiveList from "@/components/admin/ArchiveList";
+import StorageUploader from "@/components/admin/StorageUploader";
 
 export default function DatabaseManagementTab() {
   const [refreshFlags, setRefreshFlags] = useState({
@@ -19,6 +20,7 @@ export default function DatabaseManagementTab() {
 
   return (
     <div className="space-y-12">
+      <StorageUploader triggerRefresh={triggerRefresh} />
       <ArchiveList
         archivesProp="officialArchives"
         refreshKey={refreshFlags.officialArchives}

@@ -178,3 +178,96 @@ export const storageProxy = onRequest((req, res) => {
     }
   });
 });
+
+/**
+ * HTTP 요청을 받아 Storage의 파일을 삭제하는 프록시 함수
+ */
+export const deleteStorageObject = onRequest(async (req, res) => {
+  // 1. CORS 정책을 적용합니다.
+  corsHandler(req, res, async () => {
+    // 🚨 중요: 실제 프로덕션에서는 이 함수를 호출하는 사용자가
+    // 관리자인지 확인하는 로직이 반드시 필요합니다.
+    // 예시:
+    // const idToken = req.headers.authorization?.split('Bearer ')[1];
+    // if (!idToken) {
+    //   res.status(401).send("인증 토큰이 없습니다.");
+    //   return;
+    // }
+    // try {
+    //   const decodedToken = await admin.auth().verifyIdToken(idToken);
+    //   if (decodedToken.isAdmin !== true) {
+    //     res.status(403).send("관리자 권한이 필요합니다.");
+    //     return;
+    //   }
+    // } catch (error) {
+    //   res.status(401).send("유효하지 않은 토큰입니다.");
+    //   return;
+    // }
+
+    // 2. 쿼리 파라미터에서 삭제할 파일 경로를 가져옵니다.
+    const filePath = req.query.filePath;
+    if (!filePath || typeof filePath !== "string") {
+      res.status(400).send("파일 경로(filePath)가 올바르지 않습니다.");
+      return;
+    }
+
+    try {
+      // 3. Admin SDK를 사용해 파일을 삭제합니다.
+      const bucket = admin.storage().bucket();
+      const file = bucket.file(filePath);
+
+      const [exists] = await file.exists();
+      if (!exists) {
+        // 파일이 이미 없어도 성공으로 간주할 수 있습니다.
+        res.status(200).send({ message: "파일이 이미 존재하지 않습니다." });
+        return;
+      }
+
+      await file.delete();
+      res.status(200).send({ message: "파일이 성공적으로 삭제되었습니다." });
+    } catch (error) {
+      console.error("Storage 파일 삭제 중 오류 발생:", error);
+      res.status(500).send("파일 삭제 중 서버 오류가 발생했습니다.");
+    }
+  });
+});
+
+/**
+ * 클라이언트가 파일을 Storage에 직접 업로드할 수 있는
+ * 서명된 URL(Signed URL)을 생성하여 반환하는 함수
+ */
+export const getSignedUploadUrl = onCall(async (request) => {
+  // 1. 관리자만 이 함수를 호출할 수 있도록 권한을 확인합니다.
+  ensureIsAdmin(request.auth?.token);
+
+  // 2. 클라이언트로부터 파일 이름과 타입을 전달받습니다.
+  const { fileName, contentType } = request.data;
+  if (
+    !fileName ||
+    typeof fileName !== "string" ||
+    !contentType ||
+    typeof contentType !== "string"
+  ) {
+    throw new HttpsError("invalid-argument", "파일 이름과 타입이 필요합니다.");
+  }
+
+  try {
+    const bucket = admin.storage().bucket();
+    const filePath = `archives/${fileName}`; // 파일이 저장될 경로
+    const file = bucket.file(filePath);
+
+    // 3. 15분 동안 유효한, 파일을 업로드(write)할 수 있는 URL을 생성합니다.
+    const [url] = await file.getSignedUrl({
+      action: "write",
+      version: "v4", // v4 서명 방식 사용
+      expires: Date.now() + 15 * 60 * 1000, // 15분 후 만료
+      contentType: contentType, // 클라이언트가 보내는 파일 타입과 일치해야 함
+    });
+
+    // 4. 생성된 URL과 파일 경로를 클라이언트에 반환합니다.
+    return { uploadUrl: url, storagePath: filePath };
+  } catch (error) {
+    console.error("서명된 업로드 URL 생성 오류:", error);
+    throw new HttpsError("internal", "업로드 링크를 생성하는 데 실패했습니다.");
+  }
+});

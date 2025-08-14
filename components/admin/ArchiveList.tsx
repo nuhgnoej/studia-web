@@ -3,9 +3,12 @@
 
 import { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
-import { db } from "@/lib/firebase/firebase";
 import { ArchiveItem } from "@/types/archive";
 import { moveDocument } from "@/lib/firebase/firestoreUtils";
+import { ref, deleteObject } from "firebase/storage";
+import { db, storage } from "@/lib/firebase/firebase";
+import { deleteDoc, doc } from "firebase/firestore";
+import { useAuth } from "@/context/AuthContext";
 
 type CollectionName =
   | "officialArchives"
@@ -36,6 +39,8 @@ export default function ArchiveList({
   refreshKey,
   triggerRefresh,
 }: Props) {
+  const { user } = useAuth();
+
   const [archives, setArchives] = useState<ArchiveItem[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -116,6 +121,56 @@ export default function ArchiveList({
     }
   };
 
+  const handlePermanentDelete = async (item: ArchiveItem) => {
+    if (
+      !window.confirm(
+        `정말로 '${item.title}' 파일을 영구 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.`
+      )
+    ) {
+      return;
+    }
+
+    if (!user) {
+      // 사용자 로그인 상태 확인
+      alert("로그인이 필요합니다.");
+      return;
+    }
+
+    try {
+      // 1. Storage에서 파일 삭제 (프록시 함수 호출)
+      if (item.storagePath) {
+        const token = await user.getIdToken(); // 사용자 인증 토큰 가져오기
+        const encodedPath = encodeURIComponent(item.storagePath);
+
+        // 👇 여기에 배포된 삭제 함수 URL을 입력하세요.
+        const proxyUrl = `https://asia-northeast3-studia-32dc7.cloudfunctions.net/deleteStorageObject?filePath=${encodedPath}`;
+
+        const response = await fetch(proxyUrl, {
+          method: "DELETE", // 또는 'POST'
+          headers: {
+            Authorization: `Bearer ${token}`, // 헤더에 인증 토큰 추가
+          },
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(
+            errorData.message || "Storage 파일 삭제에 실패했습니다."
+          );
+        }
+      }
+
+      // 2. Firestore에서 문서 삭제 (기존과 동일)
+      await deleteDoc(doc(db, archivesProp, item.id));
+
+      await fetchArchives();
+      alert("영구 삭제되었습니다.");
+    } catch (err: any) {
+      alert(`영구 삭제 실패: ${err.message}`);
+      console.error(err);
+    }
+  };
+
   if (loading) {
     return (
       <div className="text-gray-600 animate-pulse py-6">
@@ -156,6 +211,15 @@ export default function ArchiveList({
                 >
                   {deleteButtonTextMap[archivesProp]}
                 </button>
+                {/* 👇 영구 삭제 버튼 추가 (삭제된 항목 목록에만 표시) */}
+                {archivesProp.startsWith("deleted") && (
+                  <button
+                    onClick={() => handlePermanentDelete(item)}
+                    className="text-xs font-bold text-red-800 hover:underline"
+                  >
+                    🔥 영구 삭제
+                  </button>
+                )}
               </div>
 
               <p className="text-lg font-semibold text-gray-800 mb-1">

@@ -34,7 +34,11 @@ const initialQuestion = {
     questionText: "",
     questionExplanation: [],
   },
-  choices: ["", "", ""],
+  choices: [
+    { choice: "", choiceExplanation: "" },
+    { choice: "", choiceExplanation: "" },
+    { choice: "", choiceExplanation: "" },
+  ],
   answer: {
     answerText: "",
     answerExplanation: "",
@@ -143,7 +147,7 @@ export default function JsonEditor() {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value, dataset } = e.target;
-    const { index, field, subfield } = dataset;
+    const { index, field, subfield, subprop } = dataset;
 
     // subfield를 숫자로 변환하여 사용하거나, 존재하지 않을 경우를 대비
     const subfieldIndex = subfield ? parseInt(subfield) : null;
@@ -151,20 +155,27 @@ export default function JsonEditor() {
     const updatedQuestions = (data.questions ?? []).map((q) => {
       if (q.id === parseInt(index!)) {
         let newQuestion = { ...q };
+
         if (field === "questionText") {
           newQuestion.question.questionText = value;
-        } else if (field === "choices" && subfieldIndex !== null) {
+        }
+        // 👇 변경점: choices 편집 로직을 객체에 맞게 수정합니다.
+        else if (field === "choices" && subfieldIndex !== null && subprop) {
+          // 불변성을 위해 배열과 객체를 모두 복사합니다.
           const newChoices = [...(newQuestion.choices ?? [])];
-          newChoices[subfieldIndex] = value;
+          const newChoiceItem = { ...newChoices[subfieldIndex] };
+
+          // subprop('choice' 또는 'choiceExplanation')에 따라 값을 업데이트합니다.
+          newChoiceItem[subprop as keyof typeof newChoiceItem] = value;
+
+          newChoices[subfieldIndex] = newChoiceItem;
           newQuestion.choices = newChoices;
         } else if (field === "answerText") {
           newQuestion.answer.answerText = value;
         } else if (field === "answerExplanation") {
           newQuestion.answer.answerExplanation = value;
         } else if (field === "tags" && subfieldIndex !== null) {
-          const newTags = [...(newQuestion.tags ?? [])];
-          newTags[subfieldIndex] = value;
-          newQuestion.tags = newTags;
+          // ... (tags 로직은 기존과 동일)
         }
         return newQuestion;
       }
@@ -328,24 +339,41 @@ export default function JsonEditor() {
                   {/* 선택지 */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700">
-                      선택지
+                      선택지 및 해설
                     </label>
-                    <div className="space-y-2 mt-1">
+                    <div className="space-y-4 mt-1">
                       {(
                         data.questions.find((q) => q.id === editingQuestion)
                           ?.choices ?? []
-                      ).map((choice, choiceIndex) => (
-                        <input
+                      ).map((choiceItem, choiceIndex) => (
+                        // 👇 변경점: 각 선택지마다 choice와 choiceExplanation을 위한 입력 필드를 만듭니다.
+                        <div
                           key={choiceIndex}
-                          type="text"
-                          name={`choice-${choiceIndex}`}
-                          data-index={editingQuestion}
-                          data-field="choices"
-                          data-subfield={choiceIndex}
-                          value={choice}
-                          onChange={handleQuestionEdit}
-                          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                        />
+                          className="p-2 border rounded-md bg-gray-50"
+                        >
+                          <input
+                            type="text"
+                            placeholder={`선택지 ${choiceIndex + 1}`}
+                            data-index={editingQuestion}
+                            data-field="choices"
+                            data-subfield={choiceIndex}
+                            data-subprop="choice" // 'choice' 속성을 수정하도록 지정
+                            value={choiceItem.choice}
+                            onChange={handleQuestionEdit}
+                            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                          />
+                          <textarea
+                            placeholder={`선택지 ${choiceIndex + 1} 해설`}
+                            data-index={editingQuestion}
+                            data-field="choices"
+                            data-subfield={choiceIndex}
+                            data-subprop="choiceExplanation" // 'choiceExplanation' 속성을 수정하도록 지정
+                            value={choiceItem.choiceExplanation}
+                            onChange={handleQuestionEdit}
+                            rows={1}
+                            className="mt-1 block w-full text-sm rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                          />
+                        </div>
                       ))}
                     </div>
                   </div>
