@@ -1,0 +1,93 @@
+{
+  "metadata": {
+    "id": "dummy-quiz-001",
+    "title": "더미 문제 세트",
+    "description": "테스트 및 개발을 위해 생성된 더미 데이터입니다.",
+    "subject": "일반 상식",
+    "category": ["테스트", "데이터"],
+    "difficulty": "중급",
+    "version": "v1.1",
+    "created_at": "2025-08-15T10:00:00Z",
+    "updated_at": "2025-08-15T10:00:00Z",
+    "author": "코딩 파트너",
+    "source": "자체 생성",
+    "tags": ["더미", "테스트", "예시"],
+    "license": "CC0",
+    "num_questions": 3
+  },
+  "questions": [
+    {
+      "id": 1,
+      "type": "objective",
+      "question": {
+        "questionText": "이것은 첫 번째 객관식 질문입니다. 올바른 선택지를 고르세요.",
+        "questionExplanation": [
+          "이 질문은 데이터 구조 테스트를 위해 만들어졌습니다."
+        ]
+      },
+      "choices": [
+        {
+          "choice": "이것은 오답 선택지 1입니다.",
+          "choiceExplanation": "이 선택지는 정답이 아닙니다."
+        },
+        {
+          "choice": "이것은 정답 선택지입니다.",
+          "choiceExplanation": "축하합니다! 정답입니다."
+        },
+        {
+          "choice": "이것은 오답 선택지 2입니다.",
+          "choiceExplanation": "이 선택지 역시 정답이 아닙니다."
+        }
+      ],
+      "answer": {
+        "answerText": "이것은 정답 선택지입니다.",
+        "answerExplanation": "정답에 대한 상세한 해설이 여기에 들어갑니다."
+      },
+      "tags": ["객관식", "테스트1"]
+    },
+    {
+      "id": 2,
+      "type": "subjective",
+      "question": {
+        "questionText": "이것은 두 번째 주관식(단답형) 질문입니다. 정답을 입력하세요.",
+        "questionExplanation": []
+      },
+      "answer": {
+        "answerText": "주관식 정답",
+        "answerExplanation": "주관식 문제의 정답에 대한 해설입니다."
+      },
+      "tags": ["주관식", "테스트2"]
+    },
+    {
+      "id": 3,
+      "type": "objective",
+      "question": {
+        "questionText": "이것은 세 번째 질문입니다. `choiceExplanation`이 포함된 객체 배열 구조가 올바르게 파싱되는지 확인합니다.",
+        "questionExplanation": []
+      },
+      "choices": [
+        {
+          "choice": "선택지 A",
+          "choiceExplanation": "A는 오답입니다."
+        },
+        {
+          "choice": "선택지 B",
+          "choiceExplanation": "B도 오답입니다."
+        },
+        {
+          "choice": "선택지 C",
+          "choiceExplanation": "C가 정답입니다."
+        },
+        {
+          "choice": "선택지 D",
+          "choiceExplanation": "D는 오답입니다."
+        }
+      ],
+      "answer": {
+        "answerText": "선택지 C",
+        "answerExplanation": "데이터 마이그레이션 및 스키마 변경 테스트를 위한 문제입니다."
+      },
+      "tags": ["객관식", "스키마 테스트"]
+    }
+  ]
+}

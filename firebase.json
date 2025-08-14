@@ -1,11 +1,7 @@
 {
   "hosting": {
     "public": "out",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "cleanUrls": true,
     "trailingSlash": false
   },
@@ -20,9 +16,7 @@
         "firebase-debug.*.log",
         "*.local"
       ],
-      "predeploy": [
-        "npm --prefix \"$RESOURCE_DIR\" run build"
-      ]
+      "predeploy": ["npm --prefix \"$RESOURCE_DIR\" run build"]
     }
   ],
   "storage": {

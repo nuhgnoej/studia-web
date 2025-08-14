@@ -33,15 +33,15 @@
       "choices": [
         {
           "choice": "동적 타입 언어이다.",
-          "choiceExplanation": ""
+          "choiceExplanation": "테스트용 설명입니다.1"
         },
         {
           "choice": "HTML 템플릿 언어이다.",
-          "choiceExplanation": ""
+          "choiceExplanation": "테스트용 설명입니다.1"
         },
         {
           "choice": "런타임에서 타입을 검사한다.",
-          "choiceExplanation": ""
+          "choiceExplanation": "테스트용 설명입니다.1"
         }
       ],
       "answer": {
