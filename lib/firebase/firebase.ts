@@ -25,7 +25,7 @@ const ai = getAI(app, { backend: new GoogleAIBackend() });
 
 // Create a `GenerativeModel` instance with a model that supports your use case
 export const model = getGenerativeModel(ai, {
-  model: "gemini-2.5-flash",
+  model: "gemini-2.0-flash-lite",
   generationConfig: {
     responseMimeType: "application/json",
     responseSchema: QuizDataSchema,
