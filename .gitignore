@@ -46,3 +46,7 @@ next-env.d.ts
 
 # Firebase service account key - 절대 업로드 금지!
 serviceAccountKey.json
+
+# Firebase 설정 파일들
+cors.json
+storage.rules

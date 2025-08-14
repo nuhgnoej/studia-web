@@ -1,5 +1,12 @@
-import { onCall, HttpsError } from "firebase-functions/v2/https";
+import { onCall, onRequest, HttpsError } from "firebase-functions/v2/https";
+import { setGlobalOptions } from "firebase-functions/v2";
 import * as admin from "firebase-admin";
+import cors from "cors";
+
+setGlobalOptions({ region: "asia-northeast3" });
+
+// CORS 미들웨어를 초기화합니다.
+const corsHandler = cors({ origin: true });
 
 // Admin SDK 및 Firestore 초기화
 admin.initializeApp();
@@ -126,4 +133,48 @@ export const listAdminUsers = onCall(async (request) => {
       "관리자 목록을 불러오는 중 오류가 발생했습니다."
     );
   }
+});
+
+// 변경점 3: v2 스타일의 onRequest로 storageProxy 함수를 다시 작성합니다.
+export const storageProxy = onRequest((req, res) => {
+  // 1. CORS 정책을 적용합니다.
+  corsHandler(req, res, async () => {
+    // 2. 쿼리 파라미터에서 다운로드할 파일 경로를 가져옵니다.
+    const filePath = req.query.filePath;
+
+    // 3. 파일 경로가 유효한지 확인합니다.
+    if (!filePath || typeof filePath !== "string") {
+      res
+        .status(400)
+        .send("잘못된 요청입니다. 파일 경로(filePath)를 확인하세요.");
+      return;
+    }
+
+    try {
+      const bucket = admin.storage().bucket();
+      const file = bucket.file(filePath);
+
+      const [exists] = await file.exists();
+      if (!exists) {
+        res.status(404).send("파일을 찾을 수 없습니다.");
+        return;
+      }
+
+      // 4. 브라우저가 파일을 다운로드하도록 응답 헤더를 설정합니다.
+      const fileName = filePath.split("/").pop() || "download.json";
+      res.setHeader(
+        "Content-Disposition",
+        `attachment; filename="${encodeURIComponent(fileName)}"`
+      );
+      res.setHeader("Content-Type", "application/json");
+
+      // 5. 파일 스트림을 생성하여 클라이언트로 직접 전송합니다.
+      const readStream = file.createReadStream();
+      readStream.pipe(res);
+    } catch (error) {
+      // v2에서는 functions.logger 대신 console.error를 사용해도 됩니다.
+      console.error("프록시 처리 중 오류 발생:", error);
+      res.status(500).send("서버 내부 오류가 발생했습니다.");
+    }
+  });
 });

@@ -68,11 +68,13 @@ export const ArchiveCard = ({
     setIsLoading(true);
     try {
       // 1. Firebase Storage에서 파일의 다운로드 URL을 가져옵니다.
-      const fileRef = ref(storage, archive.storagePath);
-      const url = await getDownloadURL(fileRef);
+      const encodedPath = encodeURIComponent(archive.storagePath.trim());
+
+      // 👇 여기에 배포 후 얻게 될 함수 URL을 입력하세요.
+      const proxyUrl = `https://storageproxy-oldq47cx5q-du.a.run.app?filePath=${encodedPath}`;
 
       // 2. fetch API를 사용해 해당 URL에서 JSON 파일 내용을 직접 가져옵니다.
-      const response = await fetch(url);
+      const response = await fetch(proxyUrl);
       if (!response.ok) {
         throw new Error(`다운로드 서버 응답 오류: ${response.statusText}`);
       }
