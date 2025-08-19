@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "@/lib/firebase/firebase"; // functions 인스턴스 경로
+import LoadingIndicator from "../LoadingIndicator";
 
 // --- 타입 정의 ---
 // 함수에 전달할 데이터 타입
@@ -274,7 +275,7 @@ export default function AdminManagementDashboard() {
         </p>
         <div style={styles.tableContainer}>
           {isListLoading ? (
-            <p>목록을 불러오는 중입니다...</p>
+            <p>목록을 불러오는 중입니다...</p>            
           ) : listError ? (
             <p style={styles.messageError}>{listError}</p>
           ) : (

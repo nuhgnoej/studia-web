@@ -7,6 +7,7 @@ import PageHeader from "@/components/PageHeader";
 
 import SetAdminClaimTab from "@/components/admin/SetAdminClaimTab";
 import DatabaseManagementTab from "@/components/admin/DatabaseManagementTab";
+import FeedbackBoardTab from "@/components/admin/FeedbackBoardTab";
 
 // 탭 버튼 스타일 (예시)
 const tabStyles = {
@@ -18,9 +19,8 @@ const tabStyles = {
 export default function AdminPage() {
   const router = useRouter();
   const { isAdmin, ready } = useAuth();
-  const [activeTab, setActiveTab] = useState("dbManagement"); // 'dbManagement' or 'setAdmin'
+  const [activeTab, setActiveTab] = useState("dbManagement"); // 'dbManagement' or 'setAdmin' or 'feedbackboard'
 
-  // 관리자 권한 확인 로직은 그대로 유지
   useEffect(() => {
     if (ready && !isAdmin) {
       router.replace("/studio");
@@ -56,6 +56,16 @@ export default function AdminPage() {
           >
             관리자 권한 설정
           </button>
+          <button
+            onClick={() => setActiveTab("feedbackboard")}
+            className={`${tabStyles.base} ${
+              activeTab === "feedbackboard"
+                ? tabStyles.active
+                : tabStyles.inactive
+            }`}
+          >
+            유저 피드백 게시판
+          </button>
         </nav>
       </div>
 
@@ -63,6 +73,7 @@ export default function AdminPage() {
       <div>
         {activeTab === "dbManagement" && <DatabaseManagementTab />}
         {activeTab === "setAdmin" && <SetAdminClaimTab />}
+        {activeTab === "feedbackboard" && <FeedbackBoardTab />}
       </div>
     </main>
   );
