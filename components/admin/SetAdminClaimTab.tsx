@@ -1,8 +1,8 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { httpsCallable } from "firebase/functions";
-import { functions } from "@/lib/firebase/firebase"; // functions 인스턴스 경로
-import LoadingIndicator from "../LoadingIndicator";
+import { functions } from "@/lib/firebase/firebase";
+import { useWindowSize } from "@/hooks/useWindowSize";
 
 // --- 타입 정의 ---
 // 함수에 전달할 데이터 타입
@@ -145,7 +145,20 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 };
 
-export default function AdminManagementDashboard() {
+const mobileStyles: { [key: string]: React.CSSProperties } = {
+  container: { padding: "16px" },
+  card: { padding: "20px" },
+  title: { fontSize: "20px" },
+  inputGroup: { flexDirection: "column" },
+  button: { width: "100%" },
+  th: { padding: "8px", fontSize: "10px" },
+  td: { padding: "8px", fontSize: "12px" },
+};
+
+export default function AdminManagementTab() {
+  const { width } = useWindowSize();
+  const isMobile = width < 768;
+
   // --- 상태 관리 ---
   const [email, setEmail] = useState("");
   const [grantMessage, setGrantMessage] = useState("");
@@ -216,7 +229,6 @@ export default function AdminManagementDashboard() {
 
     try {
       await revokeAdminCallable({ uid });
-      // 성공 시 목록에서 해당 사용자 제거 (UI 즉시 반영)
       setAdmins(admins.filter((admin) => admin.uid !== uid));
       alert("권한이 성공적으로 회수되었습니다.");
     } catch (error: any) {
@@ -225,16 +237,29 @@ export default function AdminManagementDashboard() {
     }
   };
 
-  // --- 렌더링 ---
   return (
-    <div style={styles.container}>
+    <div
+      style={{
+        ...styles.container,
+        ...(isMobile ? mobileStyles.container : {}),
+      }}
+    >
       {/* 권한 부여 카드 */}
-      <div style={styles.card}>
-        <h1 style={styles.title}>관리자 권한 부여</h1>
+      <div style={{ ...styles.card, ...(isMobile ? mobileStyles.card : {}) }}>
+        <h1
+          style={{ ...styles.title, ...(isMobile ? mobileStyles.title : {}) }}
+        >
+          관리자 권한 부여
+        </h1>
         <p style={styles.description}>
           사용자 이메일을 입력하여 관리자(admin) 역할을 부여합니다.
         </p>
-        <div style={styles.inputGroup}>
+        <div
+          style={{
+            ...styles.inputGroup,
+            ...(isMobile ? mobileStyles.inputGroup : {}),
+          }}
+        >
           <input
             type="email"
             value={email}
@@ -249,6 +274,7 @@ export default function AdminManagementDashboard() {
             style={{
               ...styles.button,
               ...(isGranting ? styles.buttonDisabled : {}),
+              ...(isMobile ? mobileStyles.button : {}),
             }}
           >
             {isGranting ? "처리 중..." : "권한 부여"}
@@ -268,60 +294,95 @@ export default function AdminManagementDashboard() {
       </div>
 
       {/* 관리자 목록 카드 */}
-      <div style={styles.card}>
-        <h1 style={styles.title}>관리자 목록</h1>
+      <div style={{ ...styles.card, ...(isMobile ? mobileStyles.card : {}) }}>
+        <h1
+          style={{ ...styles.title, ...(isMobile ? mobileStyles.title : {}) }}
+        >
+          관리자 목록
+        </h1>
         <p style={styles.description}>
           현재 관리자 권한을 가진 사용자 목록입니다.
         </p>
         <div style={styles.tableContainer}>
           {isListLoading ? (
-            <p>목록을 불러오는 중입니다...</p>            
+            <p>목록을 불러오는 중입니다...</p>
           ) : listError ? (
             <p style={styles.messageError}>{listError}</p>
           ) : (
             <table style={styles.table}>
               <thead>
                 <tr>
-                  <th style={styles.th}>Email</th>
-                  <th style={styles.th}>UID</th>
-                  <th style={styles.th}>토큰 상태</th>
-                  <th style={styles.th}>DB 상태</th>
-                  <th style={styles.th}>작업</th>
+                  <th
+                    style={{
+                      ...styles.th,
+                      ...(isMobile ? mobileStyles.th : {}),
+                    }}
+                  >
+                    Email
+                  </th>
+                  {/* ✅ 모바일에선 UID 컬럼 숨기기 */}
+                  {!isMobile && <th style={styles.th}>UID</th>}
+                  <th
+                    style={{
+                      ...styles.th,
+                      ...(isMobile ? mobileStyles.th : {}),
+                    }}
+                  >
+                    상태
+                  </th>
+                  <th
+                    style={{
+                      ...styles.th,
+                      ...(isMobile ? mobileStyles.th : {}),
+                    }}
+                  >
+                    작업
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {admins.map((admin) => (
                   <tr key={admin.uid}>
-                    <td style={styles.td}>{admin.email}</td>
-                    <td style={styles.td}>{admin.uid}</td>
-                    <td style={styles.td}>
+                    <td
+                      style={{
+                        ...styles.td,
+                        ...(isMobile ? mobileStyles.td : {}),
+                      }}
+                    >
+                      {admin.email}
+                    </td>
+                    {/* ✅ 모바일에선 UID 컬럼 숨기기 */}
+                    {!isMobile && <td style={styles.td}>{admin.uid}</td>}
+                    <td
+                      style={{
+                        ...styles.td,
+                        ...(isMobile ? mobileStyles.td : {}),
+                      }}
+                    >
+                      {/* 토큰/DB 상태를 하나로 합쳐서 간소화 */}
                       <span
                         style={{
                           ...styles.statusIndicator,
-                          ...(admin.tokenIsAdmin
+                          ...(admin.tokenIsAdmin && admin.firestoreIsAdmin
                             ? styles.statusSuccess
                             : styles.statusMismatch),
                         }}
                       ></span>
-                      {admin.tokenIsAdmin ? "Admin" : "Not Admin"}
+                      {admin.tokenIsAdmin && admin.firestoreIsAdmin
+                        ? "일치"
+                        : "불일치"}
                     </td>
-                    <td style={styles.td}>
-                      <span
-                        style={{
-                          ...styles.statusIndicator,
-                          ...(admin.firestoreIsAdmin
-                            ? styles.statusSuccess
-                            : styles.statusMismatch),
-                        }}
-                      ></span>
-                      {admin.firestoreIsAdmin ? "Admin" : "Not Admin"}
-                    </td>
-                    <td style={styles.td}>
+                    <td
+                      style={{
+                        ...styles.td,
+                        ...(isMobile ? mobileStyles.td : {}),
+                      }}
+                    >
                       <button
                         onClick={() => handleRevokeAdmin(admin.uid)}
                         style={{ ...styles.button, ...styles.revokeButton }}
                       >
-                        권한 회수
+                        회수
                       </button>
                     </td>
                   </tr>

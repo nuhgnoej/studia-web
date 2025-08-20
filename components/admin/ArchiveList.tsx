@@ -180,9 +180,9 @@ export default function ArchiveList({
   }
 
   return (
-    <section className="mt-8 mb-12">
+    <section className="bg-white p-6 rounded-2xl shadow-[0px_8px_24px_rgba(0,0,0,0.08)] max-w-4xl mx-auto">
       <h2 className="text-xl font-bold mb-4 border-b pb-2 capitalize text-gray-800">
-        {archivesProp}
+        {archivesProp} ({archives.length}개)
       </h2>
 
       {archives.length === 0 ? (
@@ -191,47 +191,59 @@ export default function ArchiveList({
           <p className="mt-2">등록된 문제세트가 없습니다.</p>
         </div>
       ) : (
-        <ul className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {archives.map((item) => (
+            // ✅ 이 부분의 className을 수정했습니다.
             <li
               key={item.id}
-              className="relative p-4 border border-gray-200 rounded-xl shadow-sm bg-white hover:shadow-md transition-shadow"
+              className="bg-white p-4 rounded-xl shadow-[0px_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0px_8px_24px_rgba(0,0,0,0.1)] transition-shadow flex flex-col"
             >
+              {/* 정보 영역 */}
+              <div className="flex-grow">
+                <p className="text-lg font-semibold text-gray-800 mb-1 break-words">
+                  {item.title}
+                </p>
+                <p className="text-sm text-gray-600">
+                  업로더: <span className="font-medium">{item.uploader}</span>
+                </p>
+                <p className="text-sm text-gray-600">
+                  문항 수: {item.questionsCount}
+                </p>
+                <p className="text-sm text-gray-700 mt-2 break-words">
+                  {item.description}
+                </p>
+              </div>
+
               {/* 버튼 영역 */}
-              <div className="absolute top-2 right-2 flex flex-col items-end space-y-1">
+              <div className="border-t mt-3 pt-3 flex justify-end items-center gap-2">
+                {/* 이동/복구 버튼 */}
                 <button
                   onClick={() => handleMove(item.id)}
-                  className="text-xs text-blue-600 hover:underline"
+                  className="px-3 py-1.5 text-xs font-semibold text-blue-700 bg-blue-100 rounded-md hover:bg-blue-200 transition-colors"
                 >
                   {moveButtonTextMap[archivesProp]}
                 </button>
-                <button
-                  onClick={() => handleDelete(item.id)}
-                  className="text-xs text-red-600 hover:underline"
-                >
-                  {deleteButtonTextMap[archivesProp]}
-                </button>
-                {/* 👇 영구 삭제 버튼 추가 (삭제된 항목 목록에만 표시) */}
+
+                {/* 삭제 버튼 */}
+                {deleteButtonTextMap[archivesProp] && (
+                  <button
+                    onClick={() => handleDelete(item.id)}
+                    className="px-3 py-1.5 text-xs font-semibold text-orange-700 bg-orange-100 rounded-md hover:bg-orange-200 transition-colors"
+                  >
+                    {deleteButtonTextMap[archivesProp]}
+                  </button>
+                )}
+
+                {/* 영구 삭제 버튼 */}
                 {archivesProp.startsWith("deleted") && (
                   <button
                     onClick={() => handlePermanentDelete(item)}
-                    className="text-xs font-bold text-red-800 hover:underline"
+                    className="px-3 py-1.5 text-xs font-semibold text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors"
                   >
                     🔥 영구 삭제
                   </button>
                 )}
               </div>
-
-              <p className="text-lg font-semibold text-gray-800 mb-1">
-                {item.title}
-              </p>
-              <p className="text-sm text-gray-600">
-                업로더: <span className="font-medium">{item.uploader}</span>
-              </p>
-              <p className="text-sm text-gray-600">
-                문항 수: {item.questionsCount}
-              </p>
-              <p className="text-sm text-gray-700 mt-2">{item.description}</p>
             </li>
           ))}
         </ul>

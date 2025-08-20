@@ -19,7 +19,7 @@ export default function DatabaseManagementTab() {
   };
 
   return (
-    <div className="space-y-12">
+    <div className="bg-slate-50 p-4 md:p-6 min-h-full space-y-8">
       <StorageUploader triggerRefresh={triggerRefresh} />
       <ArchiveList
         archivesProp="officialArchives"

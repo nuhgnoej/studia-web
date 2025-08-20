@@ -25,7 +25,7 @@ interface QuizBG {
   bgId: string; // 파일명 기반 고유 ID
   name_ko: string;
   name_en: string;
-  imageURL: string; // iconURL -> imageURL로 변경
+  imageURL: string;
   createdAt: any; // Timestamp 타입
 }
 
@@ -34,7 +34,6 @@ export default function QuizBGImgManagementTab() {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
-
   const [koreanName, setKoreanName] = useState("");
   const [englishName, setEnglishName] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -104,7 +103,9 @@ export default function QuizBGImgManagementTab() {
         setKoreanName("");
         setEnglishName("");
         setSelectedFile(null);
-        const fileInput = document.getElementById('bg-upload') as HTMLInputElement;
+        const fileInput = document.getElementById(
+          "bg-upload"
+        ) as HTMLInputElement;
         if (fileInput) fileInput.value = "";
         alert("업로드가 완료되었습니다!");
       }
@@ -113,7 +114,8 @@ export default function QuizBGImgManagementTab() {
 
   // 배경 이미지 삭제 핸들러
   const handleDelete = async (bg: QuizBG) => {
-    if (!window.confirm(`'${bg.name_ko}' 이미지를 정말 삭제하시겠습니까?`)) return;
+    if (!window.confirm(`'${bg.name_ko}' 이미지를 정말 삭제하시겠습니까?`))
+      return;
     try {
       if (bg.imageURL) {
         const storageRef = ref(storage, bg.imageURL);
@@ -135,12 +137,12 @@ export default function QuizBGImgManagementTab() {
   };
 
   return (
-    <section className="bg-slate-50 p-6 min-h-full">
+    <section className="bg-slate-50 p-4 md:p-6 min-h-full">
       <div className="bg-white p-6 rounded-2xl shadow-[0px_8px_24px_rgba(0,0,0,0.08)] mb-8 max-w-2xl mx-auto">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">
+        <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">
           새 배경 이미지 업로드
         </h2>
-        
+
         <div className="space-y-4 mb-4">
           <input
             type="text"
@@ -160,28 +162,24 @@ export default function QuizBGImgManagementTab() {
           />
         </div>
 
-        <input
-          type="file"
-          id="bg-upload"
-          accept="image/png, image/jpeg, image/jpg"
-          onChange={handleFileChange}
-          disabled={uploading}
-          className="hidden"
-        />
-        <label
-          htmlFor="bg-upload"
-          className="inline-block bg-gray-200 text-gray-700 px-4 py-2 rounded-md cursor-pointer hover:bg-gray-300 text-sm"
-        >
-          {selectedFile ? `선택된 파일: ${selectedFile.name}` : "1. 이미지 파일 선택"}
-        </label>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+          <label
+            htmlFor="bg-upload"
+            className="inline-block bg-gray-200 text-gray-700 px-4 py-2 rounded-md cursor-pointer hover:bg-gray-300 text-sm text-center"
+          >
+            {selectedFile
+              ? `선택된 파일: ${selectedFile.name}`
+              : "1. 이미지 파일 선택"}
+          </label>
 
-        <button
-          onClick={handleFileUpload}
-          disabled={uploading || !selectedFile || !koreanName || !englishName}
-          className="ml-4 px-6 py-2.5 bg-blue-600 text-white font-medium text-sm leading-tight uppercase rounded-md shadow-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
-        >
-          {uploading ? "업로드 중..." : "2. 업로드 시작"}
-        </button>
+          <button
+            onClick={handleFileUpload}
+            disabled={uploading || !selectedFile || !koreanName || !englishName}
+            className="px-6 py-2.5 bg-blue-600 text-white font-medium text-sm leading-tight uppercase rounded-md shadow-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+          >
+            {uploading ? "업로드 중..." : "2. 업로드 시작"}
+          </button>
+        </div>
 
         {uploading && (
           <div className="mt-4 w-full bg-gray-200 rounded-full h-2.5">
@@ -197,42 +195,49 @@ export default function QuizBGImgManagementTab() {
       </div>
 
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">
+        <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">
           배경 이미지 목록 ({backgrounds.length}개)
         </h2>
         {loading ? (
           <p>목록을 불러오는 중...</p>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
             {backgrounds.map((bg) => (
               <div
                 key={bg.id}
-                className="bg-white rounded-2xl p-4 flex flex-col justify-between shadow-[0px_8px_24px_rgba(0,0,0,0.08)] hover:shadow-xl transition-shadow duration-300"
+                className="relative rounded-2xl shadow-[0px_8px_24px_rgba(0,0,0,0.08)] hover:shadow-xl transition-shadow duration-300 overflow-hidden aspect-[2/3]"
               >
-                {/* 배경 이미지는 16:9 비율이 적합 */}
-                <div className="w-full aspect-video bg-slate-100 rounded-lg mb-3 overflow-hidden">
-                  {bg.imageURL ? (
-                    <img
-                      src={bg.imageURL}
-                      alt={bg.name_ko}
-                      className="w-full h-full object-cover" // contain -> cover로 변경
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-4xl text-slate-400">
-                      🖼️
-                    </div>
-                  )}
-                </div>
-                <div className="w-full text-center">
-                  <p className="font-semibold text-sm truncate w-full" title={bg.name_ko}>
-                    {bg.name_ko} ({bg.name_en})
-                  </p>
-                  <p className="text-xs text-gray-500 mt-1">
-                    {bg.createdAt?.toDate().toLocaleDateString("ko-KR")}
-                  </p>
+                {/* 배경 이미지 */}
+                {bg.imageURL ? (
+                  <img
+                    src={bg.imageURL}
+                    alt={bg.name_ko}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-4xl bg-slate-100 text-slate-400">
+                    🖼️
+                  </div>
+                )}
+                {/* 정보 오버레이 */}
+                <div className="absolute inset-0 flex flex-col justify-end p-4 bg-gradient-to-t from-black/70 to-transparent">
+                  <div className="text-white [text-shadow:0_1px_3px_rgb(0,0,0,0.5)]">
+                    <p
+                      className="font-bold text-base truncate"
+                      title={bg.name_ko}
+                    >
+                      {bg.name_ko}
+                    </p>
+                    <p className="text-sm font-medium opacity-90">
+                      {bg.name_en}
+                    </p>
+                    <p className="text-xs opacity-80 mt-1">
+                      {bg.createdAt?.toDate().toLocaleDateString("ko-KR")}
+                    </p>
+                  </div>
                   <button
                     onClick={() => handleDelete(bg)}
-                    className="mt-2 text-xs bg-red-500 text-white px-3 py-1.5 rounded-md hover:bg-red-600 transition-colors"
+                    className="mt-3 self-start text-xs bg-red-500 text-white px-3 py-1.5 rounded-md hover:bg-red-600 transition-colors"
                   >
                     삭제
                   </button>

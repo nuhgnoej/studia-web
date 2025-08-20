@@ -34,15 +34,18 @@ export default function AdminPage() {
   }
 
   return (
-    <main className="p-8 max-w-5xl mx-auto">
+    // ✅ 1. 모바일에서는 패딩을 줄이고, PC에서는 늘리도록 수정 (p-4 md:p-8)
+    <main className="p-4 md:p-8 max-w-5xl mx-auto">
       <PageHeader title="📊 관리자 대시보드" />
 
       {/* 탭 네비게이션 */}
-      <div className="mb-8 border-b border-gray-200">
+      {/* ✅ 2. 탭 메뉴를 감싸는 div를 추가하여 가로 스크롤이 가능하도록 수정 */}
+      <div className="mb-8 border-b border-gray-200 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         <nav className="flex space-x-4">
+          {/* 탭 버튼들은 white-space-nowrap으로 줄바꿈 방지 */}
           <button
             onClick={() => setActiveTab("dbManagement")}
-            className={`${tabStyles.base} ${
+            className={`whitespace-nowrap ${tabStyles.base} ${
               activeTab === "dbManagement"
                 ? tabStyles.active
                 : tabStyles.inactive
@@ -52,7 +55,7 @@ export default function AdminPage() {
           </button>
           <button
             onClick={() => setActiveTab("setAdmin")}
-            className={`${tabStyles.base} ${
+            className={`whitespace-nowrap ${tabStyles.base} ${
               activeTab === "setAdmin" ? tabStyles.active : tabStyles.inactive
             }`}
           >
@@ -60,7 +63,7 @@ export default function AdminPage() {
           </button>
           <button
             onClick={() => setActiveTab("feedbackboard")}
-            className={`${tabStyles.base} ${
+            className={`whitespace-nowrap ${tabStyles.base} ${
               activeTab === "feedbackboard"
                 ? tabStyles.active
                 : tabStyles.inactive
@@ -70,7 +73,7 @@ export default function AdminPage() {
           </button>
           <button
             onClick={() => setActiveTab("iconManagement")}
-            className={`${tabStyles.base} ${
+            className={`whitespace-nowrap ${tabStyles.base} ${
               activeTab === "iconManagement"
                 ? tabStyles.active
                 : tabStyles.inactive
@@ -80,7 +83,7 @@ export default function AdminPage() {
           </button>
           <button
             onClick={() => setActiveTab("quizBGImgManagement")}
-            className={`${tabStyles.base} ${
+            className={`whitespace-nowrap ${tabStyles.base} ${
               activeTab === "quizBGImgManagement"
                 ? tabStyles.active
                 : tabStyles.inactive
