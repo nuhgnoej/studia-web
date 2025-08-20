@@ -8,6 +8,8 @@ import PageHeader from "@/components/PageHeader";
 import SetAdminClaimTab from "@/components/admin/SetAdminClaimTab";
 import DatabaseManagementTab from "@/components/admin/DatabaseManagementTab";
 import FeedbackBoardTab from "@/components/admin/FeedbackBoardTab";
+import IconManagementTab from "@/components/admin/IconManagementTab";
+import QuizBGImgManagementTab from "@/components/admin/QuizBGImgManagementTab";
 
 // 탭 버튼 스타일 (예시)
 const tabStyles = {
@@ -19,7 +21,7 @@ const tabStyles = {
 export default function AdminPage() {
   const router = useRouter();
   const { isAdmin, ready } = useAuth();
-  const [activeTab, setActiveTab] = useState("dbManagement"); // 'dbManagement' or 'setAdmin' or 'feedbackboard'
+  const [activeTab, setActiveTab] = useState("dbManagement");
 
   useEffect(() => {
     if (ready && !isAdmin) {
@@ -66,6 +68,26 @@ export default function AdminPage() {
           >
             유저 피드백 게시판
           </button>
+          <button
+            onClick={() => setActiveTab("iconManagement")}
+            className={`${tabStyles.base} ${
+              activeTab === "iconManagement"
+                ? tabStyles.active
+                : tabStyles.inactive
+            }`}
+          >
+            아이콘 이미지 관리
+          </button>
+          <button
+            onClick={() => setActiveTab("quizBGImgManagement")}
+            className={`${tabStyles.base} ${
+              activeTab === "quizBGImgManagement"
+                ? tabStyles.active
+                : tabStyles.inactive
+            }`}
+          >
+            퀴즈 백그라운드 이미지 관리
+          </button>
         </nav>
       </div>
 
@@ -74,6 +96,8 @@ export default function AdminPage() {
         {activeTab === "dbManagement" && <DatabaseManagementTab />}
         {activeTab === "setAdmin" && <SetAdminClaimTab />}
         {activeTab === "feedbackboard" && <FeedbackBoardTab />}
+        {activeTab === "iconManagement" && <IconManagementTab />}
+        {activeTab === "quizBGImgManagement" && <QuizBGImgManagementTab />}
       </div>
     </main>
   );

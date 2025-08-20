@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useAuth } from "@/context/AuthContext"; // 사용자 정보를 가져오기 위함
+import { useAuth } from "@/context/AuthContext";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db, storage, functions } from "@/lib/firebase/firebase";
