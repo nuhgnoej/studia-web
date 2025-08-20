@@ -201,7 +201,7 @@ export default function IconManagementTab() {
         {loading ? (
           <p>목록을 불러오는 중...</p>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
             {qTags.map((tag) => (
               <div
                 key={tag.id}
@@ -213,7 +213,7 @@ export default function IconManagementTab() {
                     <img
                       src={tag.iconURL}
                       alt={tag.name_ko}
-                      className="w-full h-full object-contain"
+                      className="w-full h-full object-cover"
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-4xl bg-slate-100 rounded-lg text-slate-400">

@@ -196,10 +196,13 @@ export default function ArchiveList({
             // ✅ 이 부분의 className을 수정했습니다.
             <li
               key={item.id}
-              className="bg-white p-4 rounded-xl shadow-[0px_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0px_8px_24px_rgba(0,0,0,0.1)] transition-shadow flex flex-col"
+              className="relative overflow-hidden group bg-white p-4 rounded-xl shadow-[0px_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0px_8px_24px_rgba(0,0,0,0.1)] transition-shadow flex flex-col"
             >
-              {/* 정보 영역 */}
-              <div className="flex-grow">
+              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/5 via-white/0 to-white/5" />
+              <div className="absolute top-0 left-1/2 w-full h-full bg-gradient-to-br from-slate-50/5 via-slate-50/0 to-slate-50/5 transform -translate-x-1/2" />
+
+              {/* 정보 영역 (z-10 추가) */}
+              <div className="flex-grow z-10">
                 <p className="text-lg font-semibold text-gray-800 mb-1 break-words">
                   {item.title}
                 </p>
@@ -215,7 +218,7 @@ export default function ArchiveList({
               </div>
 
               {/* 버튼 영역 */}
-              <div className="border-t mt-3 pt-3 flex justify-end items-center gap-2">
+              <div className="border-t mt-3 pt-3 flex justify-end items-center gap-2 z-10">
                 {/* 이동/복구 버튼 */}
                 <button
                   onClick={() => handleMove(item.id)}
