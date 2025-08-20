@@ -19,12 +19,15 @@ import {
   deleteObject,
 } from "firebase/storage";
 
+// 배경 이미지 문서의 타입을 정의합니다.
 interface QuizBG {
-  id: string;
+  id: string; // Firestore 문서 ID
+  imageURL: string;
+  createdAt: any; // Timestamp 타입
   tag_ko?: string;
   tag_en?: string;
-  imageURL: string;
-  createdAt: any;
+  tag_ko_lowercase?: string;
+  tag_en_lowercase?: string;
 }
 
 export default function QuizBGImgManagementTab() {
@@ -56,14 +59,13 @@ export default function QuizBGImgManagementTab() {
     return () => unsubscribe();
   }, []);
 
-  // 파일 업로드 핸들러
   const handleFileUpload = async () => {
     if (!selectedFile) {
       alert("먼저 파일을 선택해주세요.");
       return;
     }
     if (!koreanTag && !englishTag) {
-      alert("한글 또는 영어 이름 중 하나 이상을 입력해주세요.");
+      alert("한글 또는 영어 태그 중 하나 이상을 입력해주세요.");
       return;
     }
 
@@ -101,12 +103,7 @@ export default function QuizBGImgManagementTab() {
           docData.tag_en_lowercase = englishTag.toLowerCase();
         }
 
-        await addDoc(collection(db, "quizBackgrounds"), {
-          tag_ko: koreanTag,
-          tag_en: englishTag,
-          imageURL: downloadURL,
-          createdAt: serverTimestamp(),
-        });
+        await addDoc(collection(db, "quizBackgrounds"), docData);
 
         setUploading(false);
         setProgress(0);
@@ -122,10 +119,9 @@ export default function QuizBGImgManagementTab() {
     );
   };
 
-  // 배경 이미지 삭제 핸들러
   const handleDelete = async (bg: QuizBG) => {
-    if (!window.confirm(`'${bg.tag_ko}' 이미지를 정말 삭제하시겠습니까?`))
-      return;
+    const tagName = bg.tag_ko || bg.tag_en || "이름 없는 이미지";
+    if (!window.confirm(`'${tagName}' 이미지를 정말 삭제하시겠습니까?`)) return;
     try {
       if (bg.imageURL) {
         const storageRef = ref(storage, bg.imageURL);
@@ -156,7 +152,7 @@ export default function QuizBGImgManagementTab() {
         <div className="space-y-4 mb-4">
           <input
             type="text"
-            placeholder="한글 태그 (예: 우주, 풍경)"
+            placeholder="한글 태그 (선택)"
             value={koreanTag}
             onChange={(e) => setKoreanTag(e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -164,7 +160,7 @@ export default function QuizBGImgManagementTab() {
           />
           <input
             type="text"
-            placeholder="영어 태그 (예: Space Landscape)"
+            placeholder="영어 태그 (선택)"
             value={englishTag}
             onChange={(e) => setEnglishTag(e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -176,10 +172,10 @@ export default function QuizBGImgManagementTab() {
           <input
             type="file"
             id="bg-upload"
-            accept="image/png"
+            accept="image/png, image/jpeg, image/jpg"
             onChange={handleFileChange}
             disabled={uploading}
-            className="hidden" // 실제 input은 숨김
+            className="hidden"
           />
           <label
             htmlFor="bg-upload"
@@ -200,11 +196,13 @@ export default function QuizBGImgManagementTab() {
         </div>
 
         {uploading && (
-          <div className="mt-4 w-full bg-gray-200 rounded-full h-2.5">
-            <div
-              className="bg-blue-600 h-2.5 rounded-full"
-              style={{ width: `${progress}%` }}
-            />
+          <div className="mt-4">
+            <div className="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
+              <div
+                className="bg-blue-600 h-2.5 rounded-full transition-all duration-300 ease-linear"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
             <p className="text-sm text-center mt-1 text-gray-600">
               {progress}%
             </p>
@@ -225,11 +223,10 @@ export default function QuizBGImgManagementTab() {
                 key={bg.id}
                 className="relative rounded-2xl shadow-[0px_8px_24px_rgba(0,0,0,0.08)] hover:shadow-xl transition-shadow duration-300 overflow-hidden aspect-[2/3]"
               >
-                {/* 배경 이미지 */}
                 {bg.imageURL ? (
                   <img
                     src={bg.imageURL}
-                    alt={bg.tag_ko}
+                    alt={bg.tag_ko || bg.tag_en}
                     className="w-full h-full object-cover"
                   />
                 ) : (
@@ -237,17 +234,13 @@ export default function QuizBGImgManagementTab() {
                     🖼️
                   </div>
                 )}
-                {/* 정보 오버레이 */}
-                <div className="absolute inset-0 flex flex-col justify-end p-4 bg-gradient-to-t from-black/70 to-transparent">
+                <div className="absolute inset-0 flex flex-col justify-end p-4 bg-gradient-to-t from-black/70 to-transparent pointer-events-none">
                   <div className="text-white [text-shadow:0_1px_3px_rgb(0,0,0,0.5)]">
                     <p
                       className="font-bold text-base truncate"
-                      title={bg.tag_ko}
+                      title={bg.tag_ko || bg.tag_en}
                     >
-                      {bg.tag_ko}
-                    </p>
-                    <p className="text-sm font-medium opacity-90">
-                      {bg.tag_en}
+                      {bg.tag_ko || ""} ({bg.tag_en || ""})
                     </p>
                     <p className="text-xs opacity-80 mt-1">
                       {bg.createdAt?.toDate().toLocaleDateString("ko-KR")}
@@ -255,7 +248,7 @@ export default function QuizBGImgManagementTab() {
                   </div>
                   <button
                     onClick={() => handleDelete(bg)}
-                    className="mt-3 self-start text-xs bg-red-500 text-white px-3 py-1.5 rounded-md hover:bg-red-600 transition-colors"
+                    className="mt-3 self-start text-xs bg-red-500 text-white px-3 py-1.5 rounded-md hover:bg-red-600 transition-colors pointer-events-auto"
                   >
                     삭제
                   </button>
