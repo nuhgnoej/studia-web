@@ -136,6 +136,13 @@ export default function IconManagementTab() {
     }
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+    }
+  };
+
   return (
     <section className="bg-slate-50 p-4 md:p-6 min-h-full">
       <div className="bg-white p-6 rounded-2xl shadow-[0px_8px_24px_rgba(0,0,0,0.08)] mb-8 max-w-2xl mx-auto">
@@ -163,6 +170,14 @@ export default function IconManagementTab() {
         </div>
 
         <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+          <input
+            type="file"
+            id="icon-upload"
+            accept="image/png"
+            onChange={handleFileChange}
+            disabled={uploading}
+            className="hidden" // 실제 input은 숨김
+          />
           <label
             htmlFor="icon-upload"
             className="inline-block bg-gray-200 text-gray-700 px-4 py-2 rounded-md cursor-pointer hover:bg-gray-300 text-sm text-center"
