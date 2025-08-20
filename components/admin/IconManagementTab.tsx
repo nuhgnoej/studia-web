@@ -21,9 +21,8 @@ import {
 
 interface QTag {
   id: string;
-  tagId: string;
-  name_ko: string;
-  name_en: string;
+  tag_ko?: string;
+  tag_en?: string;
   iconURL: string;
   createdAt: any;
 }
@@ -63,13 +62,12 @@ export default function IconManagementTab() {
       alert("먼저 파일을 선택해주세요.");
       return;
     }
-    if (!koreanTag || !englishTag) {
-      alert("한글 및 영어 태그를 모두 입력해주세요.");
+    if (!koreanTag && !englishTag) {
+      alert("한글 또는 영어 태그 중 하나 이상을 입력해주세요.");
       return;
     }
 
     const file = selectedFile;
-    const tagId = file.name.split(".").slice(0, -1).join(".");
     const storageRef = ref(storage, `qTagIcons/${file.name}`);
     const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -89,13 +87,22 @@ export default function IconManagementTab() {
       },
       async () => {
         const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-        await addDoc(collection(db, "qTags"), {
-          tagId: tagId,
-          name_ko: koreanTag,
-          name_en: englishTag,
+
+        const docData: { [key: string]: any } = {
           iconURL: downloadURL,
           createdAt: serverTimestamp(),
-        });
+        };
+
+        if (koreanTag) {
+          docData.tag_ko = koreanTag;
+          docData.tag_ko_lowercase = koreanTag.toLowerCase();
+        }
+        if (englishTag) {
+          docData.tag_en = englishTag;
+          docData.tag_en_lowercase = englishTag.toLowerCase();
+        }
+
+        await addDoc(collection(db, "qTags"), docData);
 
         setUploading(false);
         setProgress(0);
@@ -114,7 +121,7 @@ export default function IconManagementTab() {
   };
 
   const handleDelete = async (tag: QTag) => {
-    if (!window.confirm(`'${tag.tagId}' 아이콘을 정말 삭제하시겠습니까?`))
+    if (!window.confirm(`'${tag.tag_ko}' 아이콘을 정말 삭제하시겠습니까?`))
       return;
     try {
       if (tag.iconURL) {
@@ -126,13 +133,6 @@ export default function IconManagementTab() {
     } catch (error) {
       console.error("Delete failed:", error);
       alert("삭제 중 오류가 발생했습니다.");
-    }
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
     }
   };
 
@@ -174,7 +174,7 @@ export default function IconManagementTab() {
 
           <button
             onClick={handleFileUpload}
-            disabled={uploading || !selectedFile || !koreanTag || !englishTag}
+            disabled={uploading || !selectedFile || (!koreanTag && !englishTag)}
             className="px-6 py-2.5 bg-blue-600 text-white font-medium text-sm leading-tight uppercase rounded-md shadow-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
           >
             {uploading ? "업로드 중..." : "2. 업로드 시작"}
@@ -211,7 +211,7 @@ export default function IconManagementTab() {
                 {tag.iconURL ? (
                   <img
                     src={tag.iconURL}
-                    alt={tag.name_ko}
+                    alt={tag.tag_ko}
                     className="w-full h-full object-contain p-4"
                   />
                 ) : (
@@ -225,9 +225,9 @@ export default function IconManagementTab() {
                   <div className="text-white [text-shadow:0_1px_3px_rgb(0,0,0,0.5)]">
                     <p
                       className="font-bold text-sm truncate"
-                      title={tag.name_ko}
+                      title={tag.tag_ko}
                     >
-                      {tag.name_ko} ({tag.name_en})
+                      {tag.tag_ko} ({tag.tag_en})
                     </p>
                     <p className="text-xs opacity-80 mt-1">
                       {tag.createdAt?.toDate().toLocaleDateString("ko-KR")}
