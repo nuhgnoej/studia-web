@@ -19,14 +19,12 @@ import {
   deleteObject,
 } from "firebase/storage";
 
-// 배경 이미지 문서의 타입을 정의합니다.
 interface QuizBG {
-  id: string; // Firestore 문서 ID
-  bgId: string; // 파일명 기반 고유 ID
-  name_ko: string;
-  name_en: string;
+  id: string;
+  tag_ko?: string;
+  tag_en?: string;
   imageURL: string;
-  createdAt: any; // Timestamp 타입
+  createdAt: any;
 }
 
 export default function QuizBGImgManagementTab() {
@@ -34,11 +32,10 @@ export default function QuizBGImgManagementTab() {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [koreanName, setKoreanName] = useState("");
-  const [englishName, setEnglishName] = useState("");
+  const [koreanTag, setKoreanTag] = useState("");
+  const [englishTag, setEnglishTag] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-  // Firestore에서 배경 이미지 목록 실시간 데이터 가져오기
   useEffect(() => {
     const q = query(collection(db, "quizBackgrounds"));
     const unsubscribe = onSnapshot(
@@ -65,13 +62,12 @@ export default function QuizBGImgManagementTab() {
       alert("먼저 파일을 선택해주세요.");
       return;
     }
-    if (!koreanName || !englishName) {
-      alert("한글 및 영어 이름을 모두 입력해주세요.");
+    if (!koreanTag && !englishTag) {
+      alert("한글 또는 영어 이름 중 하나 이상을 입력해주세요.");
       return;
     }
 
     const file = selectedFile;
-    const bgId = file.name.split(".").slice(0, -1).join(".");
     const storageRef = ref(storage, `quizBackgrounds/${file.name}`);
     const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -90,18 +86,32 @@ export default function QuizBGImgManagementTab() {
       },
       async () => {
         const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+
+        const docData: { [key: string]: any } = {
+          imageURL: downloadURL,
+          createdAt: serverTimestamp(),
+        };
+
+        if (koreanTag) {
+          docData.tag_ko = koreanTag;
+          docData.tag_ko_lowercase = koreanTag.toLowerCase();
+        }
+        if (englishTag) {
+          docData.tag_en = englishTag;
+          docData.tag_en_lowercase = englishTag.toLowerCase();
+        }
+
         await addDoc(collection(db, "quizBackgrounds"), {
-          bgId: bgId,
-          name_ko: koreanName,
-          name_en: englishName,
+          tag_ko: koreanTag,
+          tag_en: englishTag,
           imageURL: downloadURL,
           createdAt: serverTimestamp(),
         });
 
         setUploading(false);
         setProgress(0);
-        setKoreanName("");
-        setEnglishName("");
+        setKoreanTag("");
+        setEnglishTag("");
         setSelectedFile(null);
         const fileInput = document.getElementById(
           "bg-upload"
@@ -114,7 +124,7 @@ export default function QuizBGImgManagementTab() {
 
   // 배경 이미지 삭제 핸들러
   const handleDelete = async (bg: QuizBG) => {
-    if (!window.confirm(`'${bg.name_ko}' 이미지를 정말 삭제하시겠습니까?`))
+    if (!window.confirm(`'${bg.tag_ko}' 이미지를 정말 삭제하시겠습니까?`))
       return;
     try {
       if (bg.imageURL) {
@@ -139,17 +149,17 @@ export default function QuizBGImgManagementTab() {
         <div className="space-y-4 mb-4">
           <input
             type="text"
-            placeholder="한글 이름 (예: 우주 풍경)"
-            value={koreanName}
-            onChange={(e) => setKoreanName(e.target.value)}
+            placeholder="한글 태그 (예: 우주, 풍경)"
+            value={koreanTag}
+            onChange={(e) => setKoreanTag(e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             disabled={uploading}
           />
           <input
             type="text"
-            placeholder="영어 이름 (예: Space Landscape)"
-            value={englishName}
-            onChange={(e) => setEnglishName(e.target.value)}
+            placeholder="영어 태그 (예: Space Landscape)"
+            value={englishTag}
+            onChange={(e) => setEnglishTag(e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             disabled={uploading}
           />
@@ -167,7 +177,7 @@ export default function QuizBGImgManagementTab() {
 
           <button
             onClick={handleFileUpload}
-            disabled={uploading || !selectedFile || !koreanName || !englishName}
+            disabled={uploading || !selectedFile || (!koreanTag && !englishTag)}
             className="px-6 py-2.5 bg-blue-600 text-white font-medium text-sm leading-tight uppercase rounded-md shadow-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
           >
             {uploading ? "업로드 중..." : "2. 업로드 시작"}
@@ -204,7 +214,7 @@ export default function QuizBGImgManagementTab() {
                 {bg.imageURL ? (
                   <img
                     src={bg.imageURL}
-                    alt={bg.name_ko}
+                    alt={bg.tag_ko}
                     className="w-full h-full object-cover"
                   />
                 ) : (
@@ -217,12 +227,12 @@ export default function QuizBGImgManagementTab() {
                   <div className="text-white [text-shadow:0_1px_3px_rgb(0,0,0,0.5)]">
                     <p
                       className="font-bold text-base truncate"
-                      title={bg.name_ko}
+                      title={bg.tag_ko}
                     >
-                      {bg.name_ko}
+                      {bg.tag_ko}
                     </p>
                     <p className="text-sm font-medium opacity-90">
-                      {bg.name_en}
+                      {bg.tag_en}
                     </p>
                     <p className="text-xs opacity-80 mt-1">
                       {bg.createdAt?.toDate().toLocaleDateString("ko-KR")}
