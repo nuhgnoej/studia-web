@@ -208,19 +208,17 @@ export default function IconManagementTab() {
                 className="relative bg-white rounded-2xl shadow-[0px_8px_24px_rgba(0,0,0,0.08)] hover:shadow-xl transition-shadow duration-300 overflow-hidden aspect-square"
               >
                 {/* 배경 아이콘 */}
-                <div className="absolute inset-0 p-4">
-                  {tag.iconURL ? (
-                    <img
-                      src={tag.iconURL}
-                      alt={tag.name_ko}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-4xl bg-slate-100 rounded-lg text-slate-400">
-                      🖼️
-                    </div>
-                  )}
-                </div>
+                {tag.iconURL ? (
+                  <img
+                    src={tag.iconURL}
+                    alt={tag.name_ko}
+                    className="w-full h-full object-contain p-4"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-4xl bg-slate-100 rounded-lg text-slate-400">
+                    🖼️
+                  </div>
+                )}
 
                 {/* 정보 오버레이 */}
                 <div className="absolute inset-0 flex flex-col justify-end p-4 bg-gradient-to-t from-black/70 to-transparent">
